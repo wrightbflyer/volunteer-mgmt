@@ -63,3 +63,6 @@
         ?>
     </tbody>
 </table>
+<p>
+<input type="button" value="Export" />
+</p>

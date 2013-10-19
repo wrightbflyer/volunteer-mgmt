@@ -186,6 +186,19 @@ class WBF_Membership {
       return "<th><a href=\"$url\">$label</a></th>";
     }
 
+    static private function text_editor_for($field, $label, $args = null) 
+    {
+      $req = "";
+
+      if( isset($args) && isset($args["required"]) && $args["required"] == true ) {
+        $req = "<span class=\"req\">*</span>";
+      }
+      return "<div>
+                <label for=\"$field\">$label $req</label>
+                <input type=\"text\" name=\"$field\" id=\"$field\"/>
+              </div>";
+    }
+
     static private function get_members($db, $clause = null)
     {
       $orderBy = isset($_GET["sort"]) ? $_GET["sort"] : "LastName";

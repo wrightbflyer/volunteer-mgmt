@@ -106,22 +106,29 @@ if ($show_form == true)
     wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
     ?>
     <style>
-        form label { display:inline-block;width:100px;font-weight:bold;}
+        form label 
+        { 
+          display: inline-block;
+          width: 100px;
+          text-align: right;
+          margin-right: 10px;
+        }
+        form input {
+          width: 200px;
+        }
         div.section
         {
             width:30%;
             margin-left:50px;
             margin-top:20px;
             padding:7px 15px 7px 15px;
-            border:1px solid #AAA;
             border-radius:4px;
-            background-color:#EEE;
         }
         div.section div
         {
-            margin-top:3px;
+            margin-top:10px;
         }
-        button { width:100%;height:30px;}
+        button { height:30px;}
     </style>
     <form method="POST">
         <div class="section">
@@ -131,60 +138,24 @@ if ($show_form == true)
                 echo '<input type="hidden" name="ID" value="' . $data->ID . '"/>';
             }
             ?>
-            <div>
-                <label>First Name <span class="req">*</span></label>
-                <input type="text" name="FirstName" id="FirstName"/>
-            </div>
-            <div>
-                <label>LastName <span class="req">*</span></label>
-                <input type="text" name="LastName" id="LastName"/>
-            </div>
-            <div>
-                <label>Email </label>
-                <input type="text" name="Email" id="Email"/>
-            </div>
+            <?php echo self::text_editor_for("FirstName", "First Name",  array("required" => true)) ?>
+            <?php echo self::text_editor_for("LastName", "Last Name",  array("required" => true)) ?>
+            <?php echo self::text_editor_for("Email", "Email") ?>
             <div>
                 <label>Member Type </label>
                 <input type="text" name="MemberType" id="MemberType"/>
             </div>
+            <?php echo self::text_editor_for("RenewalDate", "Renewal Date") ?>
+            <?php echo self::text_editor_for("Address", "Address") ?>
+            <?php echo self::text_editor_for("City", "City") ?>
+            <?php echo self::text_editor_for("State", "State") ?>
+            <?php echo self::text_editor_for("Zip", "Zip") ?>
+            <?php echo self::text_editor_for("Country", "Country") ?>
+            <?php echo self::text_editor_for("HomePhone", "Home Phone") ?>
+            <?php echo self::text_editor_for("MobilePhone", "Mobile Phone") ?>
+            <?php echo self::text_editor_for("MemberSince", "Member Since") ?>
             <div>
-                <label>Renewal Date </label>
-                <input type="text" name="RenewalDate" id="RenewalDate"/>
-            </div>
-            <div>
-                <label>Address </label>
-                <input type="text" name="Address" id="Address"/>
-            </div>
-            <div>
-                <label>City </label>
-                <input type="text" name="City" id="City"/>
-            </div>
-            <div>
-                <label>State </label>
-                <input type="text" name="State" id="State"/>
-            </div>
-            <div>
-                <label>Zip </label>
-                <input type="text" name="Zip" id="Zip"/>
-            </div>
-            <div>
-                <label>Country </label>
-                <input type="text" name="Country" id="Country"/>
-            </div>
-            <div>
-                <label>Home Phone </label>
-                <input type="text" name="HomePhone" id="HomePhone"/>
-            </div>
-            <div>
-                <label>Mobile Phone </label>
-                <input type="text" name="MobilePhone" id="MobilePhone"/>
-            </div>
-            <div>
-                <label>Member Since </label>
-                <input type="text" name="MemberSince" id="MemberSince"/>
-            </div>
-            <div>
-                <button type="submit" id="member_form_submit"></button>
+                <button style="float: right" type="submit" id="member_form_submit"></button>
             </div>
         </div>
     </form>
