@@ -38,6 +38,7 @@
                         [MemberType] => asdf
                         [MemberSince] => 2013-10-23 00:00:00
                         [RenewalDate] => 2013-10-09 00:00:00
+                        [FlightDate] => 2013-10-09 00:00:00
                         [Address] => asdf
                         [City] => asdf
                         [State] => asdf

@@ -8,6 +8,7 @@ if (!empty($_REQUEST['id']))
     $member = $wpdb->get_row($sql);
     $member->RenewalDate = date("m/d/Y",strtotime($member->RenewalDate));
     $member->MemberSince = date("m/d/Y",strtotime($member->MemberSince));
+    $member->FlightDate = date("m/d/Y",strtotime($member->FlightDate));
     self::partial('member_form',$member);
     ?>
     <script>jQuery(document).ready(function($) { jQuery('#member_form_submit').html('Update Member'); });</script>

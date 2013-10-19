@@ -193,7 +193,7 @@ class WBF_Membership {
      */
     static public function on_deactivate()
     {
-        self::dropSql();
+        // self::dropSql();
     }
 
     /**
@@ -201,7 +201,7 @@ class WBF_Membership {
      */
     static public function on_uninstall()
     {
-        self::dropSql();
+        // self::dropSql();
     }
     
     static private function db_string($input)
@@ -244,6 +244,7 @@ class WBF_Membership {
                     `MemberType`  varchar(64) DEFAULT NULL,
                     `MemberSince` date DEFAULT NULL,
                     `RenewalDate` date DEFAULT NULL,
+                    `FlightDate`  date DEFAULT NULL,
                     `Address`     varchar(256) DEFAULT NULL,
                     `City`        varchar(64) DEFAULT NULL,
                     `State`       varchar(64) DEFAULT NULL,

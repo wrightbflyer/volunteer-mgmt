@@ -11,6 +11,7 @@ if (!empty($_POST))
             'LastName' => $_POST['LastName'],
             'MemberType' => $_POST['MemberType'],
             'MemberSince' => self::db_date($_POST['MemberSince']),
+            'FlightDate' => self::db_date($_POST['FlightDate']),
             'RenewalDate' => self::db_date($_POST['RenewalDate']),
             'Address' => $_POST['Address'],
             'City' => $_POST['City'],
@@ -35,6 +36,7 @@ if (!empty($_POST))
             '%s',
             '%s',
             '%s',
+            '%s',
             '%s'
         )
     );
@@ -47,7 +49,7 @@ if (!empty($_POST))
         ?>
         <div class="updated settings-error">
             <p>
-                <strong>Member <a href="?page=membership-manager-membership_list&id=<?php echo $newID;?>">'<?php echo $_POST['FirstName'] . " " . $_POST['LastName'];?>'</a> Added</strong>
+                <strong>Member <a href="?page=membership-manager-member&id=<?php echo $newID;?>">'<?php echo $_POST['FirstName'] . " " . $_POST['LastName'];?>'</a> Added</strong>
             </p>
         </div>
         <?php
@@ -131,6 +133,7 @@ if ($show_form == true)
                 </select>
             </div>
             <?php echo self::text_editor_for("RenewalDate", "Renewal Date") ?>
+            <?php echo self::text_editor_for("FlightDate", "Flight Date") ?>
             <?php echo self::text_editor_for("Address", "Address") ?>
             <?php echo self::text_editor_for("City", "City") ?>
             <div>
@@ -204,6 +207,7 @@ if ($show_form == true)
         jQuery(function($) {
             $( "#MemberSince" ).datepicker();
             $( "#RenewalDate" ).datepicker();
+            $( "#FlightDate" ).datepicker();
             $( "#MemberSince" ).val(<?php echo json_encode(date("m/d/Y"));?>);
             <?php
             if (!empty($data))
