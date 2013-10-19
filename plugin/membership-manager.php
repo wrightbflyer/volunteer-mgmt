@@ -56,6 +56,14 @@ class WBF_Membership {
         );
         add_submenu_page(
                 'membership-manager',
+                null,
+                null,
+                'manage_options',
+                'membership-manager-member',
+                array(__CLASS__, 'include_admin_file')
+        );
+         add_submenu_page(
+                'membership-manager',
                 "Renewals",
                 "Renewals",
                 'MM-WBF: Manage Membership Database',
@@ -242,10 +250,8 @@ class WBF_Membership {
       return $db->get_results($sql);
     }
 
-
     static private function get_member_types($db)
     {
         return $db->get_results("select * from " . self::$member_type_table . " order by idx asc");
     }
-
 }
