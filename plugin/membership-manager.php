@@ -14,7 +14,8 @@ register_uninstall_hook(__FILE__, array('WBF_Membership', 'on_uninstall'));
 add_action( 'plugins_loaded', array( 'WBF_Membership', 'initialize' ) );
 class WBF_Membership {
     
-    public static $table = 'wp_wbf_members';
+    public static $member_table = 'wp_wbf_members';
+    public static $member_type_table = 'wp_wbf_member_type';
     
     static public function initialize()
     {
@@ -25,7 +26,7 @@ class WBF_Membership {
         // create the table if it doesn't exist
         global $wpdb;
         $sql = "
-            CREATE TABLE IF NOT EXISTS `" . self::$table . "` (
+            CREATE TABLE IF NOT EXISTS `" . self::$member_table . "` (
                 `ID`          bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `FirstName`   varchar(256) DEFAULT NULL,
                 `LastName`    varchar(256) DEFAULT NULL,
@@ -42,6 +43,12 @@ class WBF_Membership {
                 `Email`       varchar(128) DEFAULT NULL,
                 PRIMARY KEY (`ID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+        create table if not exists `" . self::$member_type_table . "` (
+            `MemberType` varchar(64) not null,
+             primary key (`MemberType`)
+         ) engine=InnoDB default charset=utf8;
+
         ";
         $wpdb->query($sql);
     }
@@ -137,7 +144,8 @@ class WBF_Membership {
         // XXX: registration hooks not working as expected
         throw new Exception('here on_uninstall', 400);
         global $wpdb;
-        $wpdb->query("DROP TABLE `" . self::$table . "`;");
+        $wpdb->query("DROP TABLE `" . self::$member_table . "`;");
+        $wpdb->query("DROP TABLE `" . self::$member_type_table . "`;");
     }
     
     static private function db_string($input)
