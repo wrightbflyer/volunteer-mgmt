@@ -8,11 +8,11 @@
 <table>
     <thead>
         <tr>
-            <th>Member Name</th>
-            <th>Member Type</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Renewal Date</th>
+          <?php echo self::th('Member Name', 'lastname') ?>
+          <?php echo self::th('Member Type', 'membertype') ?>
+          <?php echo self::th('Email', 'email') ?>
+          <?php echo self::th('Home Phone', 'homephone') ?>
+          <?php echo self::th('Renewal Date', 'renewaldate') ?>
         </tr>
     </thead>
     <tbody>

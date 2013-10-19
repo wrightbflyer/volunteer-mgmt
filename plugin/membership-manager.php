@@ -162,6 +162,13 @@ class WBF_Membership {
         $file = dirname(__FILE__) . "/partials/" . $partial . ".php";
         if (file_exists($file)) include $file;
     }
+
+    static private function th($label, $sortable) 
+    {
+      $url = add_query_arg( array( 'sort' => $sortable ) );
+
+      return "<th><a href=\"$url\">$label</a></th>";
+    }
 }
 
 
