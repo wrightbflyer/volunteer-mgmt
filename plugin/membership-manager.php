@@ -220,9 +220,9 @@ class WBF_Membership {
       return $db->get_results($sql);
     }
 
-    static private function get_member_types()
+    static private function get_member_types($db)
     {
-        return $wpdb->get_results("select * from " . self::$member_type_table . " order by idx asc");
+        return $db->get_results("select * from " . self::$member_type_table . " order by idx asc");
     }
 
 }

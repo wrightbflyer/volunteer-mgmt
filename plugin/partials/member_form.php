@@ -125,8 +125,8 @@ if ($show_form == true)
                 </label>
                 <select id="MemberType" name="MemberType">
                     <option value="">Please choose a level</option>
-                    <?php foreach ( self::get_member_types($wpdb) as $member_type_row ) { $member_type = $member_type_row->MemberType; ?>
-                    <option value="<?php echo $member_type ?>"><?php echo $member_type ?></option>
+                    <?php foreach ( self::get_member_types($wpdb) as $member_type ) { ?>
+                    <option value="<?php echo $member_type->MemberType ?>"><?php echo $member_type->MemberType ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -140,6 +140,7 @@ if ($show_form == true)
             <?php echo self::text_editor_for("MobilePhone", "Mobile Phone") ?>
             <?php echo self::text_editor_for("MemberSince", "Member Since") ?>
             <div>
+                <a stype="float:right" href="admin.php?page=membership-manager-membership_list">cancel</a>
                 <button style="float: right" type="submit" id="member_form_submit"></button>
             </div>
         </div>
