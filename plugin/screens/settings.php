@@ -1,5 +1,4 @@
-<h1>Membership Manager</h1>
-<h2>Settings</h2>
+<h2>Membership Settings</h2>
 
 <p>
     Maybe use this to store Membership Types?

@@ -1,4 +1,3 @@
-<h1>Membership Manager</h1>
 <?php
 if (!empty($_REQUEST['id']))
 {

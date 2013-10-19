@@ -1,4 +1,3 @@
-<h1>Membership Manager</h1>
 <h2>Manage Membership Types</h2>
 
 <?php 
