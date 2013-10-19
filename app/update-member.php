@@ -1,6 +1,8 @@
 <?php 
 date_default_timezone_set('America/New_York');
 
+$member = json_decode($HTTP_RAW_POST_DATA);
+
 // Connects to your Database 
 $db = new mysqli("127.0.0.1", "root", "", "members") or die(mysql_error()); 
 
@@ -12,9 +14,9 @@ $upsql = 'UPDATE `members`.`members`
           SET `Firstname` = ?, `Lastname` = ?, `MembershipType` = ?, `RenewalDate` = ?, `City` = ?, `State` = ?, `Zip` = ?, `Country` = ?, `HomePhone` = ?, `MobilePhone` = ?, `Email` = ? 
           WHERE `id` = ?';
 
-if( isset($_POST["id"]) ) {
+if( isset($member->{"id"}) ) {
   $sql = $upsql;
-  $id =  $_POST["id"];
+  $id =  $member->{"id"};
 } else {
   $sql = $stmt;
   $id = getGUID();
@@ -23,17 +25,17 @@ if( isset($_POST["id"]) ) {
 $stmt = $db->prepare($sql);
 
 $stmt->bind_param('ssssssssssss', 
-  $_POST["firstname"], 
-  $_POST["lastname"], 
-  $_POST["membershiptype"], 
-  date("Y-m-d H:i:s", strtotime($_POST["renewaldate"])), 
-  $_POST["city"], 
-  $_POST["state"], 
-  $_POST["zip"], 
-  $_POST["country"], 
-  $_POST["homephone"], 
-  $_POST["mobilephone"], 
-  $_POST["email"],
+  $member->{"firstname"}, 
+  $member->{"lastname"}, 
+  $member->{"membershiptype"}, 
+  date("Y-m-d H:i:s", strtotime($member->{"renewaldate"})), 
+  $member->{"city"}, 
+  $member->{"state"}, 
+  $member->{"zip"}, 
+  $member->{"country"}, 
+  $member->{"homephone"}, 
+  $member->{"mobilephone"}, 
+  $member->{"email"},
   $id);
 
 if( !$stmt->execute() ){ 
