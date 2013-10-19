@@ -139,6 +139,7 @@ if ($show_form == true)
             <div>
                 <label for="State">State</label>
                 <select id="State" name="State">
+                    <option value="">--</option>
                     <option value="AL">AL</option>
                     <option value="AK">AK</option>
                     <option value="AZ">AZ</option>
