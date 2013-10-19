@@ -40,14 +40,13 @@ $stmt->bind_param('ssssssssssss',
   $id);
 
 if( !$stmt->execute() ){ 
-  $result = array( 'error' => $db->error );
+  header('HTTP/1.1 500 Internal Server Error');
+  print $db->error;
 } else {
+  header("content-type: application/json");
   $result = array( 'id' => $id );
+  print json_encode($result);
 }
-
-header("content-type: application/json");
-print json_encode($result);
-
 
 function getGUID(){
   if (function_exists('com_create_guid')){
