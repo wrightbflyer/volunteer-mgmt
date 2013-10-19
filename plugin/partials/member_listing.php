@@ -4,7 +4,13 @@
         background-color:#ddd;
     }
     tbody td {padding:5px;}
+    #download { margin-bottom: 20px; }
 </style>
+
+<div id="download">
+<a href="<?php echo add_query_arg( array("download"=>"true") ) ?>">Download</a>
+</div>
+
 <table>
     <thead>
         <tr>
@@ -45,7 +51,7 @@
             ?>
             <tr>
                 <td>
-                    <a href="<?php echo add_query_arg( 'id', $member->ID );?>">
+                    <a href="<?php echo add_query_arg( array("id"=>$member->ID), menu_page_url( 'membership-manager-member', false ) ); ?>">
                         <?php echo $member->LastName;?>, <?php echo $member->FirstName;?>
                     </a>
                 </td>
@@ -63,6 +69,3 @@
         ?>
     </tbody>
 </table>
-<p>
-<input type="button" value="Export" />
-</p>

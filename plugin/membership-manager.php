@@ -20,25 +20,40 @@ class WBF_Membership {
     
     static public function initialize()
     {
-        /*
-        $user = wp_get_current_user();
-        if (   isset($user)
-            && isset($user->allcaps)
-            && (is_array($user->allcaps))
-            && isset($user->allcaps['MM-WBF: Manage Membership Database'])
-           )
-        */
-        {
-            add_action('init', array(__CLASS__, 'init'));
-            add_action('admin_menu', array(__CLASS__, 'admin_menu'));
-            add_action('admin_init', array(__CLASS__, 'admin_init'));
-        }
+        add_action('init', array(__CLASS__, 'init'));
+        add_action('admin_menu', array(__CLASS__, 'admin_menu'));
+        add_action('admin_init', array(__CLASS__, 'admin_init'));
     }
     
     static public function init()
     {
+      if( isset($_GET["download"]) ){
+        global $wpdb;
+        self::downloadcsv($_GET["page"]);
+        exit;
+      }
     }
     
+    static function delimit($accum,$next) {
+      return "$accum$next,";
+    }
+
+    static function downloadcsv($p) {
+      header('Content-Type: text/csv; charset=utf-8');
+      header("Cache-Control: no-store, no-cache");
+      header('Content-Disposition: attachment; filename="members.csv"');
+
+      global $wpdb;
+      $members = self::get_members($wpdb);
+      $fieldnames = $wpdb->get_col_info("name");
+
+      echo strtolower( array_reduce($fieldnames, "self::delimit") ) . "\n";
+
+      foreach($members as $member) {
+        $values = get_object_vars($member);
+        echo array_reduce($values, "self::delimit" ) . "\n";
+      }
+    }
     static public function admin_menu()
     {
         add_menu_page(
@@ -52,7 +67,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Membership List",
                 "Membership List",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-membership_list',
                 array(__CLASS__, 'include_admin_file')
         );
@@ -60,15 +75,23 @@ class WBF_Membership {
                 'membership-manager',
                 "Add New Member",
                 "Add New Member",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-new_member',
                 array(__CLASS__, 'include_admin_file')
         );
         add_submenu_page(
                 'membership-manager',
-                "Renewals",
-                "Renewals",
+                null,
+                null,
                 'manage_options',
+                'membership-manager-member',
+                array(__CLASS__, 'include_admin_file')
+        );
+         add_submenu_page(
+                'membership-manager',
+                "Renewals",
+                "Renewals",
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-renewals',
                 array(__CLASS__, 'include_admin_file')
         );
@@ -76,7 +99,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Snail Mail",
                 "Snail Mail",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-snailmail',
                 array(__CLASS__, 'include_admin_file')
         );
@@ -84,7 +107,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Import CSV",
                 "Import CSV",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-import_csv',
                 array(__CLASS__, 'include_admin_file')
         );
@@ -92,7 +115,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Manage Member Types",
                 "Manage Member Types",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-manage_membership_types',
                 array(__CLASS__, 'include_admin_file')
         );
@@ -100,7 +123,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Settings",
                 "Settings",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-settings',
                 array(__CLASS__, 'include_admin_file')
               );*/
@@ -252,10 +275,8 @@ class WBF_Membership {
       return $db->get_results($sql);
     }
 
-
     static private function get_member_types($db)
     {
         return $db->get_results("select * from " . self::$member_type_table . " order by idx asc");
     }
-
 }
