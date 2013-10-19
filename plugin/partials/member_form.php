@@ -69,16 +69,7 @@ if (!empty($_POST))
         ?>
         <div class="updated settings-error">
             <p>
-                <strong>Member '<?php echo $_POST['FirstName'] . " " . $_POST['LastName'];?>' Added</strong>
-            </p>
-        </div>
-        <div>
-            <p>
-                <a href="?page=membership-manager-membership_list&id=<?php echo $newID;?>">View Record</a>
-                &nbsp;
-                <a href="?page=membership-manager-membership_list">View Member List</a>
-                &nbsp;
-                <a href="?page=membership-manager-new_member">Create Another Member</a>
+                <strong>Member <a href="?page=membership-manager-membership_list&id=<?php echo $newID;?>">'<?php echo $_POST['FirstName'] . " " . $_POST['LastName'];?>'</a> Added</strong>
             </p>
         </div>
         <?php
@@ -90,14 +81,7 @@ if (!empty($_POST))
         ?>
         <div class="updated settings-error">
             <p>
-                <strong>Member '<?php echo $_POST['FirstName'] . " " . $_POST['LastName'];?>' Updated</strong>
-            </p>
-        </div>
-        <div>
-            <p>
-                <a href="?page=membership-manager-membership_list&id=<?php echo $newID;?>">View Record</a>
-                &nbsp;
-                <a href="?page=membership-manager-membership_list">View Member List</a>
+                <strong>Member <a href="?page=membership-manager-membership_list&id=<?php echo $newID;?>">'<?php echo $_POST['FirstName'] . " " . $_POST['LastName'];?>'</a> Updated</strong>
             </p>
         </div>
         <?php
