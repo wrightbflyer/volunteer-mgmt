@@ -1,5 +1,5 @@
-CREATE TABLE `members` (
-  `id` char(36) NOT NULL,
+CREATE TABLE `wp_wbf_members` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `FirstName` varchar(256) NOT NULL,
   `LastName` varchar(256) DEFAULT NULL,
   `SpouseName` varchar(256) DEFAULT NULL,
@@ -15,6 +15,4 @@ CREATE TABLE `members` (
   `MobilePhone` varchar(32) DEFAULT NULL,
   `Email` varchar(155) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-

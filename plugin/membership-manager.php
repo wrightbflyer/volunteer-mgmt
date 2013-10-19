@@ -22,35 +22,6 @@ class WBF_Membership {
         add_action('init', array(__CLASS__, 'init'));
         add_action('admin_menu', array(__CLASS__, 'admin_menu'));
         add_action('admin_init', array(__CLASS__, 'admin_init'));
-        
-        // create the table if it doesn't exist
-        global $wpdb;
-        $sql = "
-            CREATE TABLE IF NOT EXISTS `" . self::$member_table . "` (
-                `ID`          bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `FirstName`   varchar(256) DEFAULT NULL,
-                `LastName`    varchar(256) DEFAULT NULL,
-                `MemberType`  varchar(64) DEFAULT NULL,
-                `MemberSince` datetime DEFAULT NULL,
-                `RenewalDate` datetime DEFAULT NULL,
-                `Address`     varchar(256) DEFAULT NULL,
-                `City`        varchar(64) DEFAULT NULL,
-                `State`       varchar(64) DEFAULT NULL,
-                `Zip`         varchar(32) DEFAULT NULL,
-                `Country`     varchar(64) DEFAULT NULL,
-                `HomePhone`   varchar(32) DEFAULT NULL,
-                `MobilePhone` varchar(32) DEFAULT NULL,
-                `Email`       varchar(128) DEFAULT NULL,
-                PRIMARY KEY (`ID`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-        create table if not exists `" . self::$member_type_table . "` (
-            `MemberType` varchar(64) not null,
-             primary key (`MemberType`)
-         ) engine=InnoDB default charset=utf8;
-
-        ";
-        $wpdb->query($sql);
     }
     
     static public function init()
@@ -130,8 +101,8 @@ class WBF_Membership {
     
     static public function on_activate()
     {
-        // XXX: registration hooks not working as expected
-        throw new Exception('here on_activate', 400);
+        self::initSql("members_table");
+        self::initSql("member_type_table");
     }
 
     /**
@@ -140,8 +111,8 @@ class WBF_Membership {
      */
     static public function on_deactivate()
     {
-        // XXX: registration hooks not working as expected
-        throw new Exception('here on_deactivate', 400);
+        self::dropSql("member_type_table");
+        self::dropSql("members_table");
     }
 
     /**
@@ -149,11 +120,8 @@ class WBF_Membership {
      */
     static public function on_uninstall()
     {
-        // XXX: registration hooks not working as expected
-        throw new Exception('here on_uninstall', 400);
-        global $wpdb;
-        $wpdb->query("DROP TABLE `" . self::$member_table . "`;");
-        $wpdb->query("DROP TABLE `" . self::$member_type_table . "`;");
+        self::dropSql("member_type_table");
+        self::dropSql("members_table");
     }
     
     static private function db_string($input)
@@ -171,12 +139,56 @@ class WBF_Membership {
     {
         return sprintf('%d',$input);
     }
-    
+
+    static private function partialFile($path, $partial, $suffix)
+    {
+        return dirname(__FILE__) . $path . $partial . $suffix;
+    }
+
     static private function partial($partial, $data)
     {
         global $wpdb;
-        $file = dirname(__FILE__) . "/partials/" . $partial . ".php";
+        $file = self::partialFile("/partials/", $partial, ".php");
         if (file_exists($file)) include $file;
+    }
+
+    static private function initSql()
+    {
+        global $wpdb;
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        $sql = 
+            "CREATE TABLE IF NOT EXISTS `" . self::$member_table . "` (
+                    `ID`          bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                    `FirstName`   varchar(256) DEFAULT NULL,
+                    `LastName`    varchar(256) DEFAULT NULL,
+                    `MemberType`  varchar(64) DEFAULT NULL,
+                    `MemberSince` datetime DEFAULT NULL,
+                    `RenewalDate` datetime DEFAULT NULL,
+                    `Address`     varchar(256) DEFAULT NULL,
+                    `City`        varchar(64) DEFAULT NULL,
+                    `State`       varchar(64) DEFAULT NULL,
+                    `Zip`         varchar(32) DEFAULT NULL,
+                    `Country`     varchar(64) DEFAULT NULL,
+                    `HomePhone`   varchar(32) DEFAULT NULL,
+                    `MobilePhone` varchar(32) DEFAULT NULL,
+                    `Email`       varchar(128) DEFAULT NULL,
+                    PRIMARY KEY (`ID`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+        dbDelta($sql);
+
+        $sql = "CREATE TABLE IF NOT EXISTS `" . self::$member_type_table . "` (
+            `MemberType`  varchar(64) NOT NULL,
+            PRIMARY KEY  (`MemberType`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+        dbDelta($sql);
+    }
+
+    static private function dropSql($tableName)
+    {
+        global $wpdb;
+        $wpdb->query("DROP TABLE `" . self::$member_table . "`");
+        $wpdb->query("DROP TABLE `" . self::$member_type_table . "`");
     }
 
     static private function th($label, $sortable) 
