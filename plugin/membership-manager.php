@@ -84,14 +84,6 @@ class WBF_Membership {
         );
         add_submenu_page(
                 'membership-manager',
-                "Import CSV",
-                "Import CSV",
-                'manage_options',
-                'membership-manager-import_csv',
-                array(__CLASS__, 'include_admin_file')
-        );
-        add_submenu_page(
-                'membership-manager',
                 "Renewals",
                 "Renewals",
                 'manage_options',
@@ -104,6 +96,14 @@ class WBF_Membership {
                 "Snail Mail",
                 'manage_options',
                 'membership-manager-snailmail',
+                array(__CLASS__, 'include_admin_file')
+        );
+        add_submenu_page(
+                'membership-manager',
+                "Import CSV",
+                "Import CSV",
+                'manage_options',
+                'membership-manager-import_csv',
                 array(__CLASS__, 'include_admin_file')
         );
         /*add_submenu_page(
