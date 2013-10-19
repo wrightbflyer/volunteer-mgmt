@@ -48,7 +48,7 @@ $(function() {
   </head>
   <body>
 
-
+<h2>Add new member</h2>
 <form action="update-member.php" id="member-form">
 <table class="form-table">
   <tbody>
@@ -81,6 +81,9 @@ foreach( $fields as $key => $value ) {
   <p class="submit"><input type="submit" name="savemember" id="savemember" class="button button-primary" value="Save member"></p>
 
 </form>
+
+
+<h2>Members</h2>
   </body>
 </html>
 
