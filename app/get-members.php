@@ -1,22 +1,17 @@
 <?php 
- // Connects to your Database 
- mysql_connect("127.0.0.1", "root", "") or die(mysql_error()); 
- mysql_select_db("members") or die(mysql_error()); 
- $data = mysql_query("SELECT * FROM members") 
- or die(mysql_error()); 
 
- $results = array();
+$db = new mysqli("127.0.0.1", "root", "", "members") or die(mysql_error()); 
 
- while($info = mysql_fetch_array( $data )) 
- { 
-   $results[] = array(
-           'id' => $info['id'],
-           'firstname' => $info['Firstname'],
-           'lastname' => $info['Lastname']
-         );
- } 
+$data = $db->query("SELECT * FROM members") or die(mysql_error()); 
 
+$results = array();
 
- header("content-type: application/json");
- print json_encode($results);
+while($info = $data->fetch_assoc()) 
+{ 
+  $results[] = $info;
+} 
+
+header("content-type: application/json");
+print json_encode($results);
+
 ?>
