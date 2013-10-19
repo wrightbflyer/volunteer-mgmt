@@ -23,7 +23,8 @@ else
     $startDate = date("Y-m-d H:i:s",mktime(0,0,0,date("m"),1,date("Y")));
     $endDate = date("Y-m-d H:i:s",mktime(0,0,-1,date("m")+1,1,date("Y")));
     
-    $sql = "SELECT * FROM " . self::$table . " WHERE RenewalDate BETWEEN '$startDate' AND '$endDate' ORDER BY LastName";
+    $orderBy = isset($_GET["sort"]) ? $_GET["sort"] : "LastName";
+    $sql = "SELECT * FROM " . self::$table . " WHERE RenewalDate BETWEEN '$startDate' AND '$endDate' ORDER BY $orderBy";
     $members = $wpdb->get_results($sql);
     self::partial('member_listing',$members);
 }
