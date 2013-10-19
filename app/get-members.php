@@ -16,7 +16,6 @@
          );
  } 
 
-
  header("content-type: application/json");
  print json_encode($results);
 ?>
