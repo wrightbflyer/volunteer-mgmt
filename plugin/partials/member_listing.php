@@ -10,8 +10,12 @@
         <tr>
           <?php echo self::th('Member Name', 'lastname') ?>
           <?php echo self::th('Member Type', 'membertype') ?>
-          <?php echo self::th('Email', 'email') ?>
           <?php echo self::th('Home Phone', 'homephone') ?>
+          <?php echo self::th('Mobile Phone', 'mobilephone') ?>
+          <?php echo self::th('City', 'city') ?>
+          <?php echo self::th('State', 'state') ?>
+          <?php echo self::th('Zip', 'zip') ?>
+          <?php echo self::th('Email', 'email') ?>
           <?php echo self::th('Renewal Date', 'renewaldate') ?>
         </tr>
     </thead>
@@ -46,8 +50,12 @@
                     </a>
                 </td>
                 <td><?php echo $member->MemberType;?></td>
-                <td><?php echo $member->Email;?></td>
                 <td><?php echo $member->HomePhone;?></td>
+                <td><?php echo $member->MobilePhone;?></td>
+                <td><?php echo $member->City;?></td>
+                <td><?php echo $member->State;?></td>
+                <td><?php echo $member->Zip;?></td>
+                <td><?php echo $member->Email;?></td>
                 <td><?php echo date("F jS, Y",strtotime($member->RenewalDate));?></td>
             </tr>
             <?php
