@@ -5,13 +5,14 @@
  * Version: 1.0
  * Author: Southwest Ohio GiveCamp 2013
  */
+define('WBF_MEMBERSHIP_PLUGIN_PATH', WP_PLUGIN_DIR . '/membership-manager/');
 
- // XXX: these registration hooks are not working as expected (callbacks aren't getting called)
-register_activation_hook(__FILE__, array('WBF_Membership', 'on_activate'));
-register_deactivation_hook(__FILE__, array('WBF_Membership', 'on_deactivate'));
-register_uninstall_hook(__FILE__, array('WBF_Membership', 'on_uninstall'));
+register_activation_hook(WBF_MEMBERSHIP_PLUGIN_PATH . 'membership-manager.php', array('WBF_Membership','on_activate'));
+register_deactivation_hook(WBF_MEMBERSHIP_PLUGIN_PATH . 'membership-manager.php', array('WBF_Membership','on_deactivate'));
+register_uninstall_hook(WBF_MEMBERSHIP_PLUGIN_PATH . 'membership-manager.php', array('WBF_Membership','on_uninstall'));
 
 add_action( 'plugins_loaded', array( 'WBF_Membership', 'initialize' ) );
+
 class WBF_Membership {
     
     public static $member_table = 'wp_wbf_members';
@@ -19,9 +20,19 @@ class WBF_Membership {
     
     static public function initialize()
     {
-        add_action('init', array(__CLASS__, 'init'));
-        add_action('admin_menu', array(__CLASS__, 'admin_menu'));
-        add_action('admin_init', array(__CLASS__, 'admin_init'));
+        /*
+        $user = wp_get_current_user();
+        if (   isset($user)
+            && isset($user->allcaps)
+            && (is_array($user->allcaps))
+            && isset($user->allcaps['MM-WBF: Manage Membership Database'])
+           )
+        */
+        {
+            add_action('init', array(__CLASS__, 'init'));
+            add_action('admin_menu', array(__CLASS__, 'admin_menu'));
+            add_action('admin_init', array(__CLASS__, 'admin_init'));
+        }
     }
     
     static public function init()
@@ -109,6 +120,19 @@ class WBF_Membership {
     
     static public function on_activate()
     {
+        global $wp_roles;
+        if(is_object($wp_roles)) {
+          foreach($wp_roles->roles as $role => $role_data)
+          {
+            if (   is_array($role_data['capabilities'])
+                && array_key_exists('edit_users', $role_data['capabilities'])
+                && !array_key_exists('MM-WBF: Manage Membership Database',$role_data['capabilities'])
+               )
+            {
+              $wp_roles->add_cap($role, 'MM-WBF: Manage Membership Database', true);
+            }
+          }
+        }
         self::initSql();
     }
 
@@ -183,6 +207,7 @@ class WBF_Membership {
 
         $sql = "CREATE TABLE IF NOT EXISTS `" . self::$member_type_table . "` (
             `MemberType`  varchar(64) NOT NULL,
+            `idx`       int not null default 0,
             PRIMARY KEY  (`MemberType`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
@@ -226,16 +251,11 @@ class WBF_Membership {
 
       return $db->get_results($sql);
     }
-	
+
+
     static private function get_member_types($db)
     {
-      $sql = "SELECT * FROM " . self::$member_type_table;
-
-      return $db->get_results($sql);
+        return $db->get_results("select * from " . self::$member_type_table . " order by idx asc");
     }
+
 }
-
-
-
-
-
