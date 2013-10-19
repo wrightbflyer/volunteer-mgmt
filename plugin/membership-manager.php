@@ -192,7 +192,7 @@ class WBF_Membership {
 
       $where = isset($clause) ? "WHERE $clause" : "";
 
-      $sql = "SELECT * FROM " . self::$table . " $where ORDER BY $orderBy";
+      $sql = "SELECT * FROM " . self::$member_table . " $where ORDER BY $orderBy";
 
       return $db->get_results($sql);
     }

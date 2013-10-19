@@ -26,7 +26,7 @@ if (!empty($_POST))
     */
     
     $result = $wpdb->replace(
-        self::$table
+        self::$member_table
         ,array(
             'ID' => (isset($_POST['ID']) && (!empty($_POST['ID'])))? $_POST['ID'] : 0,
             'FirstName' => $_POST['FirstName'],
