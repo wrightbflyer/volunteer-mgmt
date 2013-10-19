@@ -77,6 +77,14 @@ class WBF_Membership {
                 'membership-manager-import_csv',
                 array(__CLASS__, 'include_admin_file')
         );
+        add_submenu_page(
+                'membership-manager',
+                "Manage Member Types",
+                "Manage Member Types",
+                'manage_options',
+                'membership-manager-manage_membership_types',
+                array(__CLASS__, 'include_admin_file')
+        );
         /*add_submenu_page(
                 'membership-manager',
                 "Settings",
@@ -218,6 +226,13 @@ class WBF_Membership {
       $where = isset($clause) ? "WHERE $clause" : "";
 
       $sql = "SELECT * FROM " . self::$member_table . " $where ORDER BY $orderBy";
+
+      return $db->get_results($sql);
+    }
+	
+    static private function get_member_types($db)
+    {
+      $sql = "SELECT * FROM " . self::$member_type_table;
 
       return $db->get_results($sql);
     }
