@@ -7,18 +7,19 @@ $member = json_decode($HTTP_RAW_POST_DATA);
 $db = new mysqli("127.0.0.1", "root", "", "members") or die(mysql_error()); 
 
 $insql = 'INSERT INTO `members`.`members`
-          (`Firstname`, `Lastname`, `MembershipType`, `RenewalDate`, `City`, `State`, `Zip`, `Country`, `HomePhone`, `MobilePhone`, `Email`, `id`,
+          (`Firstname`, `Lastname`, `MembershipType`, `RenewalDate`, `City`, `State`, `Zip`, `Country`, `HomePhone`, `MobilePhone`, `Email`, `id`)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 $upsql = 'UPDATE `members`.`members`
           SET `Firstname` = ?, `Lastname` = ?, `MembershipType` = ?, `RenewalDate` = ?, `City` = ?, `State` = ?, `Zip` = ?, `Country` = ?, `HomePhone` = ?, `MobilePhone` = ?, `Email` = ? 
           WHERE `id` = ?';
 
+$sql = "";
 if( isset($member->{"id"}) ) {
   $sql = $upsql;
   $id =  $member->{"id"};
 } else {
-  $sql = $stmt;
+  $sql = $insql;
   $id = getGUID();
 }
 
