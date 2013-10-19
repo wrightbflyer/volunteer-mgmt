@@ -1,7 +1,9 @@
-<h1>Settings</h1>
+<h1>Membership Manager</h1>
+<h2>Settings</h2>
 
-<h2>BD Usage</h2>
-<pre>
-$sql = 'SELECT * FROM ' . self::$table. ' ' . $where . ' ORDER BY ' . $order;
-$rows = $wpdb->get_results($sql, OBJECT_K);
-</pre>
+<p>
+    Maybe use this to store Membership Types?
+</p>
+<p>
+    Other options / settings?
+</p>

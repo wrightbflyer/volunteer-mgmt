@@ -1,28 +1,25 @@
-<style>
-    td {width:33%;}
-</style>
-<h1>
-    Membership Listing
-</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Member</th>
-            <th>Member Type</th>
-            <th>Renewal Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                <a href="?page=membership-manager-membership_list&id=177">Test, Johnny</a>
-            </td>
-            <td>AIVA</td>
-            <td>November 1st, 2013</td>
-        </tr>
-    </tbody>
-</table>
-
-<pre>
-    <?php print_r($_REQUEST); ?>
-</pre>
+<h1>Membership Manager</h1>
+<?php
+if (!empty($_REQUEST['id']))
+{
+    ?>
+    <h2>View / Edit Member</h2>
+    <?php
+    $sql = "SELECT * FROM " . self::$table . " WHERE ID=" . self::db_number($_REQUEST['id']);
+    $member = $wpdb->get_row($sql);
+    $member->RenewalDate = date("m/d/Y",strtotime($member->RenewalDate));
+    $member->MemberSince = date("m/d/Y",strtotime($member->MemberSince));
+    self::partial('member_form',$member);
+    ?>
+    <script>jQuery(document).ready(function($) { jQuery('#member_form_submit').html('Update Member'); });</script>
+    <?php
+}
+else
+{
+    ?>
+    <h2>Membership Listing</h2>
+    <?php
+    $sql = "SELECT * FROM " . self::$table . " ORDER BY LastName";
+    $members = $wpdb->get_results($sql);
+    self::partial('member_listing',$members);
+}

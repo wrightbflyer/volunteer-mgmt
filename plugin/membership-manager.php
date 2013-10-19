@@ -1,17 +1,20 @@
 <?php
 /**
  * Plugin Name: Membership Manager
- * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A membership management plugin written for Wright-B-Flyer.org
  * Version: 1.0
- * Author: Southwestern Ohio GiveCamp 2013
+ * Author: Southwest Ohio GiveCamp 2013
  */
 
-WBF_Membership::initialize();
- 
+ // XXX: these registration hooks are not working as expected (callbacks aren't getting called)
+register_activation_hook(__FILE__, array('WBF_Membership', 'on_activate'));
+register_deactivation_hook(__FILE__, array('WBF_Membership', 'on_deactivate'));
+register_uninstall_hook(__FILE__, array('WBF_Membership', 'on_uninstall'));
+
+add_action( 'plugins_loaded', array( 'WBF_Membership', 'initialize' ) );
 class WBF_Membership {
     
-    public static $table = 'wp-wbf-members';
+    public static $table = 'wp_wbf_members';
     
     static public function initialize()
     {
@@ -19,9 +22,28 @@ class WBF_Membership {
         add_action('admin_menu', array(__CLASS__, 'admin_menu'));
         add_action('admin_init', array(__CLASS__, 'admin_init'));
         
-        register_activation_hook(__FILE__, array(__CLASS__, 'on_activate'));
-        register_deactivation_hook(__FILE__, array(__CLASS__, 'on_deactivate'));
-        register_uninstall_hook(__FILE__, array(__CLASS__, 'on_uninstall'));
+        // create the table if it doesn't exist
+        global $wpdb;
+        $sql = "
+            CREATE TABLE IF NOT EXISTS `" . self::$table . "` (
+                `ID`          bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `FirstName`   varchar(256) DEFAULT NULL,
+                `LastName`    varchar(256) DEFAULT NULL,
+                `MemberType`  varchar(64) DEFAULT NULL,
+                `MemberSince` datetime DEFAULT NULL,
+                `RenewalDate` datetime DEFAULT NULL,
+                `Address`     varchar(256) DEFAULT NULL,
+                `City`        varchar(64) DEFAULT NULL,
+                `State`       varchar(64) DEFAULT NULL,
+                `Zip`         varchar(32) DEFAULT NULL,
+                `Country`     varchar(64) DEFAULT NULL,
+                `HomePhone`   varchar(32) DEFAULT NULL,
+                `MobilePhone` varchar(32) DEFAULT NULL,
+                `Email`       varchar(128) DEFAULT NULL,
+                PRIMARY KEY (`ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        ";
+        $wpdb->query($sql);
     }
     
     static public function init()
@@ -93,42 +115,18 @@ class WBF_Membership {
     
     static public function on_activate()
     {
-        global $wpdb;
-        
-        // fresh install: install the tables if they don't exist
-        if ( $wpdb->get_var('show tables like "'.self::$table.'"') != self::$table )
-        {
-            $sql = "
-                CREATE TABLE `" . self::$table . "` (
-                    `id` char(36) NOT NULL,
-                    `FirstName` varchar(256) NOT NULL,
-                    `LastName` varchar(256) DEFAULT NULL,
-                    `MemberType` varchar(64) NOT NULL,
-                    `MemberSince` datetime DEFAULT NULL,
-                    `RenewalDate` datetime DEFAULT NULL,
-                    `Address` char(256) DEFAULT NULL,
-                    `City` char(64) DEFAULT NULL,
-                    `State` varchar(64) DEFAULT NULL,
-                    `Zip` varchar(32) DEFAULT NULL,
-                    `Country` varchar(64) DEFAULT NULL,
-                    `HomePhone` varchar(32) DEFAULT NULL,
-                    `MobilePhone` varchar(32) DEFAULT NULL,
-                    `Email` varchar(155) DEFAULT NULL,
-                    PRIMARY KEY (`id`),
-                    UNIQUE KEY `id_UNIQUE` (`id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ";
-            $wpdb->query($sql);
-        }
+        // XXX: registration hooks not working as expected
+        throw new Exception('here on_activate', 400);
     }
 
     /**
      * Do nothing like removing settings, etc.
      * The user could reactivate the plugin and wants everything in the state before activation.
-     * Take a constant to remove everything, so you can develop & test easier.
      */
     static public function on_deactivate()
     {
+        // XXX: registration hooks not working as expected
+        throw new Exception('here on_deactivate', 400);
     }
 
     /**
@@ -136,8 +134,36 @@ class WBF_Membership {
      */
     static public function on_uninstall()
     {
+        // XXX: registration hooks not working as expected
+        throw new Exception('here on_uninstall', 400);
+        global $wpdb;
+        $wpdb->query("DROP TABLE `" . self::$table . "`;");
+    }
+    
+    static private function db_string($input)
+    {
+        // XXX: This /may/ not be working exactly as desired...
+        return "'" . mysql_real_escape_string(htmlspecialchars(stripslashes($input), ENT_QUOTES, 'utf-8')) . "'";
+    }
+    
+    static private function db_date($input)
+    {
+        return mysql_real_escape_string(date("Y-m-d H:i:s",strtotime($input)));
+    }
+    
+    static private function db_number($input)
+    {
+        return sprintf('%d',$input);
+    }
+    
+    static private function partial($partial, $data)
+    {
+        global $wpdb;
+        $file = dirname(__FILE__) . "/partials/" . $partial . ".php";
+        if (file_exists($file)) include $file;
     }
 }
+
 
 
 
