@@ -19,8 +19,6 @@ else
     ?>
     <h2>Membership Listing</h2>
     <?php
-    $orderBy = isset($_GET["sort"]) ? $_GET["sort"] : "LastName";
-    $sql = "SELECT * FROM " . self::$table . " ORDER BY $orderBy";
-    $members = $wpdb->get_results($sql);
+    $members = self::get_members($wpdb);
     self::partial('member_listing',$members);
 }

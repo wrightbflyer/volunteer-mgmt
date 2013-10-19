@@ -100,12 +100,20 @@ class WBF_Membership {
         );
         add_submenu_page(
                 'membership-manager',
+                "Snail Mail",
+                "Snail Mail",
+                'manage_options',
+                'membership-manager-snailmail',
+                array(__CLASS__, 'include_admin_file')
+        );
+        /*add_submenu_page(
+                'membership-manager',
                 "Settings",
                 "Settings",
                 'manage_options',
                 'membership-manager-settings',
                 array(__CLASS__, 'include_admin_file')
-        );
+              );*/
     }
     
     static public function admin_init()
@@ -176,6 +184,17 @@ class WBF_Membership {
       $url = add_query_arg( array( 'sort' => $sortable ) );
 
       return "<th><a href=\"$url\">$label</a></th>";
+    }
+
+    static private function get_members($db, $clause = null)
+    {
+      $orderBy = isset($_GET["sort"]) ? $_GET["sort"] : "LastName";
+
+      $where = isset($clause) ? "WHERE $clause" : "";
+
+      $sql = "SELECT * FROM " . self::$table . " $where ORDER BY $orderBy";
+
+      return $db->get_results($sql);
     }
 }
 
