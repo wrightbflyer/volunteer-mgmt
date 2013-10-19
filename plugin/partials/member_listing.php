@@ -1,17 +1,17 @@
 <style>
     thead th {padding:5px;text-align:center;}
     tbody tr:nth-of-type(odd) {
-        background-color:#ddd;
+        background-color:#F4F4F4;
     }
     tbody td {padding:5px;}
     #download { margin-bottom: 20px; }
 </style>
 
 <div id="download">
-<a href="<?php echo add_query_arg( array("download"=>"true") ) ?>">Download</a>
+    <a class="button" href="<?php echo add_query_arg( array("download"=>"true") ) ?>">Download CSV</a>
 </div>
 
-<table>
+<table class="wp-list-table widefat">
     <thead>
         <tr>
           <?php echo self::th('Member Name', 'lastname') ?>

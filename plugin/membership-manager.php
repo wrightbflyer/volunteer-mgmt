@@ -27,33 +27,61 @@ class WBF_Membership {
     
     static public function init()
     {
-      if( isset($_GET["download"]) ){
-        global $wpdb;
+      if ( isset($_GET["download"]) )
+      {
         self::downloadcsv($_GET["page"]);
-        exit;
       }
     }
     
-    static function delimit($accum,$next) {
-      return "$accum$next,";
+    static function delimit($accum,$next)
+    {
+      return "$accum" . json_encode($next) . ",";
     }
 
-    static function downloadcsv($p) {
-      header('Content-Type: text/csv; charset=utf-8');
-      header("Cache-Control: no-store, no-cache");
-      header('Content-Disposition: attachment; filename="members.csv"');
-
-      global $wpdb;
-      $members = self::get_members($wpdb);
-      $fieldnames = $wpdb->get_col_info("name");
-
-      echo strtolower( array_reduce($fieldnames, "self::delimit") ) . "\n";
-
-      foreach($members as $member) {
-        $values = get_object_vars($member);
-        echo array_reduce($values, "self::delimit" ) . "\n";
-      }
+    static function downloadcsv($p)
+    {
+        global $wpdb;
+        
+        $parts = explode('-', $_GET['page']);
+        $list = array_pop($parts);
+        $filename = $list . '_' . date("Y-m-d") . ".csv";
+        
+        switch($list)
+        {
+            case "renewal":
+            {
+                $members = self::get_member_renewal_list($wpdb);
+                break;
+            }
+            case "snailmail":
+            {
+                $members = self::get_member_snailmail_list($wpdb);
+                break;
+            }
+            case "membership_list":
+            default:
+            {
+                $members = self::get_members($wpdb);
+                break;
+            }
+        }
+        ob_start();
+        $fieldnames = $wpdb->get_col_info("name");
+        echo array_reduce($fieldnames, "self::delimit") . "\n";
+        foreach($members as $member) {
+          $values = get_object_vars($member);
+          echo array_reduce($values, "self::delimit" ) . "\n";
+        }
+        $contents = ob_get_clean();
+        
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Length: ' . strlen($contents));
+        header("Cache-Control: no-store, no-cache");
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        echo $contents;
+        exit;
     }
+    
     static public function admin_menu()
     {
         add_menu_page(
@@ -214,8 +242,8 @@ class WBF_Membership {
                     `FirstName`   varchar(256) DEFAULT NULL,
                     `LastName`    varchar(256) DEFAULT NULL,
                     `MemberType`  varchar(64) DEFAULT NULL,
-                    `MemberSince` datetime DEFAULT NULL,
-                    `RenewalDate` datetime DEFAULT NULL,
+                    `MemberSince` date DEFAULT NULL,
+                    `RenewalDate` date DEFAULT NULL,
                     `Address`     varchar(256) DEFAULT NULL,
                     `City`        varchar(64) DEFAULT NULL,
                     `State`       varchar(64) DEFAULT NULL,
@@ -246,9 +274,21 @@ class WBF_Membership {
 
     static private function th($label, $sortable) 
     {
-      $url = add_query_arg( array( 'sort' => $sortable ) );
-
-      return "<th><a href=\"$url\">$label</a></th>";
+        //icon-sort icon-sort-down icon-sort-up
+        $icon = '<i class="icon icon-sort" style="color:#CCC"></i>';
+        if (   (isset($_GET['sort']) && ($_GET['sort'] == $sortable))
+            || (!isset($_GET['sort']) && ($sortable == 'lastname'))
+           )
+        {
+            $sortable .= "+DESC";
+            $icon = '<i class="icon icon-arrow-down"></i>';
+        }
+        elseif (isset($_GET['sort']) && ($_GET['sort'] == ($sortable . " DESC")))
+        {
+            $icon = '<i class="icon icon-arrow-up"></i>';
+        }
+        $url = add_query_arg( array( 'sort' => $sortable ) );
+        return "<th><a href=\"$url\">$label $icon</a></th>";
     }
 
     static private function text_editor_for($field, $label, $args = null) 
@@ -267,12 +307,25 @@ class WBF_Membership {
     static private function get_members($db, $clause = null)
     {
       $orderBy = isset($_GET["sort"]) ? $_GET["sort"] : "LastName";
-
       $where = isset($clause) ? "WHERE $clause" : "";
-
       $sql = "SELECT * FROM " . self::$member_table . " $where ORDER BY $orderBy";
-
       return $db->get_results($sql);
+    }
+    
+    static private function get_member_renewal_list($db)
+    {
+        // Calculate dates for start and end of this month
+        $startDate = date("Y-m-d H:i:s",mktime(0,0,0,date("m"),1,date("Y")));
+        $endDate = date("Y-m-d H:i:s",mktime(0,0,-1,date("m")+1,1,date("Y")));
+        
+        $where = "RenewalDate BETWEEN '$startDate' AND '$endDate'";
+        return self::get_members($db, $where);
+    }
+    
+    static private function get_member_snailmail_list($db)
+    {
+        $where = "(Email IS NULL) OR (Email <='')";
+        return self::get_members($db, $where);
     }
 
     static private function get_member_types($db)
