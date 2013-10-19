@@ -25,8 +25,11 @@ if (!empty($_POST))
 	}
 
 	$result = -1;
-	if ($_POST['member_types_delete_mode'] == 'delete')
+	if (!empty($_POST['member_types_delete_mode']) && $_POST['member_types_delete_mode'] == 'delete')
 	{
+		// delete
+		$formAction = "Deleted";
+	
 		update_members($_POST['replacementMemberType']);
 		
 		// delete the membership type
@@ -42,12 +45,15 @@ if (!empty($_POST))
 	}
 	elseif (!empty($_POST['OriginalMemberType']))
 	{
+		// update
+		$formAction = "Updated";
+	
 		// process database update
 		$result = $wpdb->update(
 			self::$member_type_table
 			,array(
 				'MemberType' => $_POST['MemberType'],
-				'Idx' => self::db_number($_POST['Idx'])
+				'idx' => self::db_number($_POST['idx'])
 			)
 			,array(
 				'MemberType' => $_POST['OriginalMemberType']
@@ -69,12 +75,15 @@ if (!empty($_POST))
 	}
 	else
 	{
+		// insert
+		$formAction = "Added";
+		
 		// process insert
 		$result = $wpdb->insert(
 			self::$member_type_table
 			,array(
 				'MemberType' => $_POST['MemberType'],
-				'Idx' => self::db_number($_POST['Idx'])
+				'idx' => self::db_number($_POST['idx'])
 			)
 			,array(
 				'%s',
@@ -82,43 +91,22 @@ if (!empty($_POST))
 			)
 		);
 	}
-    $newID = $wpdb->insert_id;
 	
-	if (($result == 1) && !empty($newID))
+	if ($result == 1)
     {
-        // Record added successfully
+        // Record added/deleted/updated successfully
         ?>
         <div class="updated settings-error">
-            <p><b>Member Type <?php echo $_POST['MemberType'];?> Added</b></p>
-        </div>
-        <?php
-    }
-	elseif ($result == 1 && $_POST['member_types_delete_mode'] == 'delete')
-	{
-		// Record deleted successfully
-        ?>
-        <div class="updated settings-error">
-            <p><b>Member Type <?php echo $_POST['MemberType'];?> Deleted</b></p>
-        </div>
-        <?php
-	}
-    elseif ($result == 1)
-    {
-        // Record updated successfully
-        ?>
-        <div class="updated settings-error">
-            <p><b>Member Type <?php echo $_POST['MemberType'];?> Updated</b></p>
+            <p><b>Member Type <?php echo $_POST['MemberType'] . ' ' . $formAction ?></b></p>
         </div>
         <?php
     }
     else
     {
-		
         ?>
-		<h1><?php echo $result; ?></h1>
         <div class="error settings-error">
             <p>
-                <strong>Database Error - please check input</strong>
+                <strong>Database Error - please check input <?php echo $formAction; ?></strong>
             </p>
         </div>
         <?php
@@ -129,7 +117,7 @@ if (!empty($_POST))
 <style>
 	div.memberTypes { width:330px; }
 	
-    div.memberTypes div.stripeMe:nth-of-type(even) {
+    div.memberTypes div.stripeMe:nth-of-type(odd) {
         background-color:#f8f8f8;
 		overflow:auto;
 		max-height:400px;
@@ -179,7 +167,7 @@ $member_types = self::get_member_types($wpdb); ?>
 	$id = (empty($_REQUEST['id'])) ? null : $_REQUEST['id'];
 	if (!empty($id) && empty($_POST))
 	{ ?>
-	<b>Edit:</b>
+	<b>Edit Membership Type:</b>
 	<?php
 	}
 	else
@@ -192,13 +180,13 @@ $member_types = self::get_member_types($wpdb); ?>
 	<?php
 		$sql = "SELECT * FROM " . self::$member_type_table . " WHERE MemberType=" . self::db_string($id);
 		$edit_type = (!empty($id)) ? $wpdb->get_row($sql) : null;?>		
-	<form method="POST" id="membership_type_form">
+	<form method="POST">
 		<?php echo self::text_editor_for("MemberType", "Member Type") ?>
-		<?php echo self::text_editor_for("Idx", "Order") ?>
-		<input type="hidden" id="OriginalMemberType" name="OriginalMemberType" value="<?php echo $edit_type->MemberType;?>" />
+		<?php echo self::text_editor_for("idx", "Order") ?>
+		<input type="hidden" id="OriginalMemberType" name="OriginalMemberType" value="<?php echo (!empty($edit_type)) ? $edit_type->MemberType : '';?>" />
 
 		<div style="float:right;">
-			<?php if (!empty($id))
+			<?php if (!empty($id) && empty($_POST))
 			{ ?>
 			<input type="hidden" id="member_types_delete_mode" name="member_types_delete_mode" />
 			<button type="button" id="member_types_delete">Delete</button>
@@ -231,23 +219,24 @@ $member_types = self::get_member_types($wpdb); ?>
 	<script>
         jQuery(document).ready(function($) {
             <?php
-            if (!empty($edit_type))
+            if (!empty($edit_type) && empty($_POST))
             {
+				// use jQuery to populate form inputs when the user is editing
                 foreach($edit_type as $k => $v)
                 {
                     ?> 
                     jQuery(<?php echo json_encode("#$k");?>).val(<?php echo json_encode($v);?>);
                     <?php
                 }?>
-				
-				jQuery('#member_types_delete').click(deleteClick);
-				jQuery('#member_types_delete_cancel').click(cancelDelete);
-				jQuery('#member_types_delete_confirm').click(deleteConfirm);
-				jQuery('#MemberType').focus();
 				<?php
             }
             ?>
-        });
+
+			jQuery('#member_types_delete').click(deleteClick);
+			jQuery('#member_types_delete_cancel').click(cancelDelete);
+			jQuery('#member_types_delete_confirm').click(deleteConfirm);
+			jQuery('#MemberType').focus();
+		});
 		
 		function deleteClick() {
 			jQuery(this).hide();
