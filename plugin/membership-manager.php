@@ -20,19 +20,9 @@ class WBF_Membership {
     
     static public function initialize()
     {
-        /*
-        $user = wp_get_current_user();
-        if (   isset($user)
-            && isset($user->allcaps)
-            && (is_array($user->allcaps))
-            && isset($user->allcaps['MM-WBF: Manage Membership Database'])
-           )
-        */
-        {
-            add_action('init', array(__CLASS__, 'init'));
-            add_action('admin_menu', array(__CLASS__, 'admin_menu'));
-            add_action('admin_init', array(__CLASS__, 'admin_init'));
-        }
+        add_action('init', array(__CLASS__, 'init'));
+        add_action('admin_menu', array(__CLASS__, 'admin_menu'));
+        add_action('admin_init', array(__CLASS__, 'admin_init'));
     }
     
     static public function init()
@@ -52,7 +42,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Membership List",
                 "Membership List",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-membership_list',
                 array(__CLASS__, 'include_admin_file')
         );
@@ -60,7 +50,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Add New Member",
                 "Add New Member",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-new_member',
                 array(__CLASS__, 'include_admin_file')
         );
@@ -68,7 +58,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Renewals",
                 "Renewals",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-renewals',
                 array(__CLASS__, 'include_admin_file')
         );
@@ -76,7 +66,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Snail Mail",
                 "Snail Mail",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-snailmail',
                 array(__CLASS__, 'include_admin_file')
         );
@@ -84,7 +74,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Import CSV",
                 "Import CSV",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-import_csv',
                 array(__CLASS__, 'include_admin_file')
         );
@@ -100,7 +90,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Settings",
                 "Settings",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-settings',
                 array(__CLASS__, 'include_admin_file')
               );*/
