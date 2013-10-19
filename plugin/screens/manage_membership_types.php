@@ -1,5 +1,4 @@
 <h2>Manage Membership Types</h2>
-
 <?php 
 if (!empty($_POST))
 {
@@ -120,9 +119,17 @@ if (!empty($_POST))
 		overflow:auto;
 		max-height:400px;
     }
-	div.memberTypeEdit { background-color:rgba(255, 255, 0, .3); margin-top:20px; border:1px solid #000; }
+	div.memberTypeEdit { margin-top:20px; }
 	
-	#divDelete { display:none; background-color:rgba(255, 0, 0, .5); margin-top:10px; }
+	#divDelete {
+		display:none; margin-top:10px;
+		padding:10px;
+	    background-color: #FFEBE8;
+		border-color: #CC0000;
+		border-radius: 3px 3px 3px 3px;
+		border-style: solid;
+		border-width: 1px;
+	}
 	
 	form label 
 	{ 
@@ -160,21 +167,22 @@ $member_types = self::get_member_types($wpdb); ?>
 <!-- add/edit/delete form -->
 <hr />
 
-<div class="memberTypeEdit memberTypes">
+<div class="metabox-holder postbox-container">
+<div class="postbox">
 	<?php
 	$id = (empty($_REQUEST['id'])) ? null : $_REQUEST['id'];
 	if (!empty($id) && empty($_POST))
 	{ ?>
-	<b>Edit Membership Type:</b>
+	<h3 class="hndle"><span>Edit Membership Type</span></h3>
 	<?php
 	}
 	else
 	{?>
-	<b>Add New Membership Type:</b>
+	<h3 class="hndle"><span>Add New Membership Type</span></h3>
 	<?php
 	}
 	?>
-	
+	<div class="inside">
 	<?php
 		$sql = "SELECT * FROM " . self::$member_type_table . " WHERE MemberType=" . self::db_string($id);
 		$edit_type = (!empty($id)) ? $wpdb->get_row($sql) : null;?>		
@@ -187,9 +195,10 @@ $member_types = self::get_member_types($wpdb); ?>
 			<?php if (!empty($id) && empty($_POST))
 			{ ?>
 			<input type="hidden" id="member_types_delete_mode" name="member_types_delete_mode" />
-			<button type="button" id="member_types_delete">Delete</button>
+			<a href="?page=membership-manager-manage_membership_types" id="member_types_cancel" class="button">Cancel</a>
+			<button type="button" id="member_types_delete" class="button">Delete</button>
 			<?php } ?>
-			<button type="submit" id="member_types_save">Save</button>
+			<button type="submit" id="member_types_save" class="button">Save</button>
 		</div>
 		<div style="clear:both;"></div>
 		
@@ -206,14 +215,15 @@ $member_types = self::get_member_types($wpdb); ?>
                     <?php } ?>
                 </select>
 			</div>
+			<br/>
 			<div style="float:right;">
-				<button type="button" id="member_types_delete_cancel">Cancel Delete</button>
-				<button id="member_types_delete_confirm">Delete</button>
+				<button type="button" id="member_types_delete_cancel" class="button">Cancel Delete</button>
+				<button id="member_types_delete_confirm" class="button">Delete</button>
 			</div>
 			<div style="clear:both;"></div>
 		</div>
 	</form>
-	
+	</div>
 	<script>
         jQuery(document).ready(function($) {
             <?php
@@ -241,6 +251,7 @@ $member_types = self::get_member_types($wpdb); ?>
 		function deleteClick() {
 			jQuery(this).hide();
 			jQuery('#member_types_save').hide();
+			jQuery('#member_types_cancel').hide();
 			jQuery('#divDelete').show();
 		}
 		
@@ -250,7 +261,7 @@ $member_types = self::get_member_types($wpdb); ?>
 		}
 		
 		function cancelDelete() {
-			jQuery('#member_types_delete, #member_types_save').show();
+			jQuery('#member_types_delete, #member_types_save, #member_types_cancel').show();
 			jQuery('#divDelete').hide();
 		}
 		
@@ -270,4 +281,5 @@ $member_types = self::get_member_types($wpdb); ?>
 			document.forms[0].submit();
 		}
     </script>
+</div>
 </div>
