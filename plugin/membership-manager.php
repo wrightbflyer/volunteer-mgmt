@@ -175,6 +175,7 @@ class WBF_Membership {
 
         $sql = "CREATE TABLE IF NOT EXISTS `" . self::$member_type_table . "` (
             `MemberType`  varchar(64) NOT NULL,
+            `idx`       int not null default 0,
             PRIMARY KEY  (`MemberType`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
@@ -218,9 +219,10 @@ class WBF_Membership {
 
       return $db->get_results($sql);
     }
+
+    static private function get_member_types()
+    {
+        return $wpdb->get_results("select * from " . self::$member_type_table . " order by idx asc");
+    }
+
 }
-
-
-
-
-

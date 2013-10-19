@@ -3,28 +3,6 @@ $show_form = true;
 
 if (!empty($_POST))
 {
-    /*
-    mysql> show columns from wp_wbf_members;
-    +-------------+---------------------+------+-----+---------+----------------+
-    | Field       | Type                | Null | Key | Default | Extra          |
-    +-------------+---------------------+------+-----+---------+----------------+
-    | ID          | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-    | FirstName   | varchar(256)        | NO   |     | NULL    |                |
-    | LastName    | varchar(256)        | YES  |     | NULL    |                |
-    | MemberType  | varchar(64)         | NO   |     | NULL    |                |
-    | MemberSince | datetime            | YES  |     | NULL    |                |
-    | RenewalDate | datetime            | YES  |     | NULL    |                |
-    | Address     | varchar(256)        | YES  |     | NULL    |                |
-    | City        | varchar(64)         | YES  |     | NULL    |                |
-    | State       | varchar(64)         | YES  |     | NULL    |                |
-    | Zip         | varchar(32)         | YES  |     | NULL    |                |
-    | Country     | varchar(64)         | YES  |     | NULL    |                |
-    | HomePhone   | varchar(32)         | YES  |     | NULL    |                |
-    | MobilePhone | varchar(32)         | YES  |     | NULL    |                |
-    | Email       | varchar(128)        | YES  |     | NULL    |                |
-    +-------------+---------------------+------+-----+---------+----------------+
-    */
-    
     $result = $wpdb->replace(
         self::$member_table
         ,array(
@@ -142,8 +120,15 @@ if ($show_form == true)
             <?php echo self::text_editor_for("LastName", "Last Name",  array("required" => true)) ?>
             <?php echo self::text_editor_for("Email", "Email") ?>
             <div>
-                <label>Member Type </label>
-                <input type="text" name="MemberType" id="MemberType"/>
+                <label for="MemberType">Member Type
+                    <span class="req">*</span>
+                </label>
+                <select id="MemberType" name="MemberType">
+                    <option value="">Please choose a level</option>
+                    <?php foreach ( self::get_member_types($wpdb) as $member_type_row ) { $member_type = $member_type_row->MemberType; ?>
+                    <option value="<?php echo $member_type ?>"><?php echo $member_type ?></option>
+                    <?php } ?>
+                </select>
             </div>
             <?php echo self::text_editor_for("RenewalDate", "Renewal Date") ?>
             <?php echo self::text_editor_for("Address", "Address") ?>
@@ -160,10 +145,10 @@ if ($show_form == true)
         </div>
     </form>
      <script>
-        jQuery(document).ready(function($) {
-            jQuery( "#MemberSince" ).datepicker();
-            jQuery( "#RenewalDate" ).datepicker();
-            jQuery( "#MemberSince" ).val(<?php echo json_encode(date("m/d/Y"));?>);
+        jQuery(function($) {
+            $( "#MemberSince" ).datepicker();
+            $( "#RenewalDate" ).datepicker();
+            $( "#MemberSince" ).val(<?php echo json_encode(date("m/d/Y"));?>);
             <?php
             if (!empty($data))
             {
@@ -171,7 +156,7 @@ if ($show_form == true)
                 {
                     if ($k == 'ID') continue;
                     ?> 
-                    jQuery(<?php echo json_encode("#$k");?>).val(<?php echo json_encode($v);?>);
+                    $(<?php echo json_encode("#$k");?>).val(<?php echo json_encode($v);?>);
                     <?php
                 }
             }
