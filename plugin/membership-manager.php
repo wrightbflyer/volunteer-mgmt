@@ -101,8 +101,7 @@ class WBF_Membership {
     
     static public function on_activate()
     {
-        self::initSql("members_table");
-        self::initSql("member_type_table");
+        self::initSql();
     }
 
     /**
@@ -111,8 +110,7 @@ class WBF_Membership {
      */
     static public function on_deactivate()
     {
-        self::dropSql("member_type_table");
-        self::dropSql("members_table");
+        self::dropSql();
     }
 
     /**
@@ -120,8 +118,7 @@ class WBF_Membership {
      */
     static public function on_uninstall()
     {
-        self::dropSql("member_type_table");
-        self::dropSql("members_table");
+        self::dropSql();
     }
     
     static private function db_string($input)
@@ -184,7 +181,7 @@ class WBF_Membership {
         dbDelta($sql);
     }
 
-    static private function dropSql($tableName)
+    static private function dropSql()
     {
         global $wpdb;
         $wpdb->query("DROP TABLE `" . self::$member_table . "`");
