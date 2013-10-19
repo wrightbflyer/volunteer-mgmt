@@ -52,8 +52,8 @@ if (!empty($_POST))
 		$result = $wpdb->update(
 			self::$member_type_table
 			,array(
-				'MemberType' => $_POST['MemberType'],
-				'idx' => self::db_number($_POST['idx'])
+				'MemberType' => $_POST['MemberType']//,
+				//'idx' => self::db_number($_POST['idx'])
 			)
 			,array(
 				'MemberType' => $_POST['OriginalMemberType']
@@ -82,8 +82,8 @@ if (!empty($_POST))
 		$result = $wpdb->insert(
 			self::$member_type_table
 			,array(
-				'MemberType' => $_POST['MemberType'],
-				'idx' => self::db_number($_POST['idx'])
+				'MemberType' => $_POST['MemberType']//,
+				//'idx' => self::db_number($_POST['idx'])
 			)
 			,array(
 				'%s',
@@ -92,22 +92,21 @@ if (!empty($_POST))
 		);
 	}
 	
-	if ($result == 1)
-    {
-        // Record added/deleted/updated successfully
-        ?>
-        <div class="updated settings-error">
-            <p><b>Member Type <?php echo $_POST['MemberType'] . ' ' . $formAction ?></b></p>
+	if ($result === false)
+    { ?>
+        <div class="error settings-error">
+            <p>
+                <strong>Database Error - please check input <?php echo $formAction; ?></strong>
+            </p>
         </div>
         <?php
     }
     else
     {
+        // Record added/deleted/updated successfully
         ?>
-        <div class="error settings-error">
-            <p>
-                <strong>Database Error - please check input <?php echo $formAction; ?></strong>
-            </p>
+        <div class="updated settings-error">
+            <p><b>Member Type <?php echo $_POST['MemberType'] . ' ' . $formAction ?></b></p>
         </div>
         <?php
     }
@@ -180,9 +179,9 @@ $member_types = self::get_member_types($wpdb); ?>
 	<?php
 		$sql = "SELECT * FROM " . self::$member_type_table . " WHERE MemberType=" . self::db_string($id);
 		$edit_type = (!empty($id)) ? $wpdb->get_row($sql) : null;?>		
-	<form method="POST">
+	<form method="POST" id="member_type_form">
 		<?php echo self::text_editor_for("MemberType", "Member Type") ?>
-		<?php echo self::text_editor_for("idx", "Order") ?>
+		<!--<?php echo self::text_editor_for("idx", "Order") ?>-->
 		<input type="hidden" id="OriginalMemberType" name="OriginalMemberType" value="<?php echo (!empty($edit_type)) ? $edit_type->MemberType : '';?>" />
 
 		<div style="float:right;">
@@ -235,6 +234,8 @@ $member_types = self::get_member_types($wpdb); ?>
 			jQuery('#member_types_delete').click(deleteClick);
 			jQuery('#member_types_delete_cancel').click(cancelDelete);
 			jQuery('#member_types_delete_confirm').click(deleteConfirm);
+			jQuery('#member_types_form').submit(formSubmit);
+			jQuery('#member_types_save').click(save);
 			jQuery('#MemberType').focus();
 		});
 		
@@ -252,6 +253,22 @@ $member_types = self::get_member_types($wpdb); ?>
 		function cancelDelete() {
 			jQuery('#member_types_delete, #member_types_save').show();
 			jQuery('#divDelete').hide();
+		}
+		
+		function formSubmit () {
+			return false;
+		}
+		
+		function save() {
+			var typeBox = jQuery('#MemberType');
+			typeBox.val(jQuery.trim(typeBox.val()));
+			if (!typeBox.val()) {
+				alert('Membership Type is required');
+				jQuery('#MemberType').focus();
+				return false;
+			}
+			jQuery(this).attr('disabled', 'disabled');
+			document.forms[0].submit();
 		}
     </script>
 </div>
