@@ -8,7 +8,7 @@
 </style>
 
 <div id="download">
-  <a href="#">Download</a>
+<a href="<?php echo add_query_arg( array("download"=>"true") ) ?>">Download</a>
 </div>
 
 <table>

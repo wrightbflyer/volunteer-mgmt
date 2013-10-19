@@ -27,8 +27,33 @@ class WBF_Membership {
     
     static public function init()
     {
+      if( isset($_GET["download"]) ){
+        global $wpdb;
+        self::downloadcsv($_GET["page"]);
+        exit;
+      }
     }
     
+    static function delimit($accum,$next) {
+      return "$accum$next,";
+    }
+
+    static function downloadcsv($p) {
+      header('Content-Type: text/csv; charset=utf-8');
+      header("Cache-Control: no-store, no-cache");
+      header('Content-Disposition: attachment; filename="members.csv"');
+
+      global $wpdb;
+      $members = self::get_members($wpdb);
+      $fieldnames = $wpdb->get_col_info("name");
+
+      echo strtolower( array_reduce($fieldnames, "self::delimit") ) . "\n";
+
+      foreach($members as $member) {
+        $values = get_object_vars($member);
+        echo array_reduce($values, "self::delimit" ) . "\n";
+      }
+    }
     static public function admin_menu()
     {
         add_menu_page(
