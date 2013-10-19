@@ -82,7 +82,7 @@ class WBF_Membership {
                 'membership-manager',
                 "Manage Member Types",
                 "Manage Member Types",
-                'manage_options',
+                'MM-WBF: Manage Membership Database',
                 'membership-manager-manage_membership_types',
                 array(__CLASS__, 'include_admin_file')
         );
