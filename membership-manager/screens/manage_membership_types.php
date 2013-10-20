@@ -187,7 +187,7 @@ $member_types = self::get_member_types($wpdb); ?>
 		$sql = "SELECT * FROM " . self::$member_type_table . " WHERE MemberType=" . self::db_string($id);
 		$edit_type = (!empty($id)) ? $wpdb->get_row($sql) : null;?>		
 	<form method="POST" id="member_type_form">
-		<?php echo self::text_editor_for("MemberType", "Member Type") ?>
+		<?php echo self::text_editor_for("MemberType", "Member Type", array("max"=>64)) ?>
 		<!--<?php echo self::text_editor_for("idx", "Order") ?>-->
 		<input type="hidden" id="OriginalMemberType" name="OriginalMemberType" value="<?php echo (!empty($edit_type)) ? $edit_type->MemberType : '';?>" />
 
