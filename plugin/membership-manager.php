@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Membership Manager
- * Description: A membership management plugin written for Wright-B-Flyer.org
+ * Plugin Name: Wright Membership Manager
+ * Description: A membership management plugin written for Wright-B-Flyer.org at Southwest Ohio GiveCamp 2013
  * Version: 1.0
- * Author: Southwest Ohio GiveCamp 2013
+ * Author: Southwest Ohio GiveCamp
  */
 define('WBF_MEMBERSHIP_PLUGIN_PATH', WP_PLUGIN_DIR . '/membership-manager/');
 
