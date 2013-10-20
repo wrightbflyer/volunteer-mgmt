@@ -230,7 +230,7 @@ class WBF_Membership {
      */
     static public function on_uninstall()
     {
-        //self::dropSql();
+        self::dropSql();
     }
     
     static private function db_string($input)
