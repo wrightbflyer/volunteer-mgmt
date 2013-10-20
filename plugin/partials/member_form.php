@@ -3,16 +3,11 @@ $show_form = true;
 
 if (!empty($_POST))
 {
-    $result = $wpdb->replace(
-        self::$member_table
-        ,array(
+    $colArray = array(
             'ID' => (isset($_POST['ID']) && (!empty($_POST['ID'])))? $_POST['ID'] : 0,
             'FirstName' => $_POST['FirstName'],
             'LastName' => $_POST['LastName'],
             'MemberType' => $_POST['MemberType'],
-            'MemberSince' => self::db_date($_POST['MemberSince']),
-            'FlightDate' => self::db_date($_POST['FlightDate']),
-            'RenewalDate' => self::db_date($_POST['RenewalDate']),
             'Address' => $_POST['Address'],
             'City' => $_POST['City'],
             'State' => $_POST['State'],
@@ -21,25 +16,30 @@ if (!empty($_POST))
             'HomePhone' => $_POST['HomePhone'],
             'MobilePhone' => $_POST['MobilePhone'],
             'Email' => $_POST['Email']
-        )
-        ,array(
-            '%d',
-            '%s',
-            '%s',
-            '%s',
-            '%s',
-            '%s',
-            '%s',
-            '%s',
-            '%s',
-            '%s',
-            '%s',
-            '%s',
-            '%s',
-            '%s',
-            '%s'
-        )
-    );
+        );
+
+    $formats = array('%d','%s','%s',
+        '%s','%s','%s','%s','%s',
+        '%s','%s','%s','%s');
+
+    if(!empty($_POST['RenewalDate'])) {
+        array_push($formats,'%s');
+        $colArray['RenewalDate'] = self::db_date($_POST['RenewalDate']); 
+    }
+
+    if(!empty($_POST['MemberSince'])) {
+        array_push($formats,'%s');
+        $colArray['MemberSince'] = self::db_date($_POST['MemberSince']); 
+    }
+
+    if(!empty($_POST['FlightDate'])) {
+        array_push($formats,'%s');
+        $colArray['FlightDate'] = self::db_date($_POST['FlightDate']); 
+    }
+
+    $result = $wpdb->replace(
+        self::$member_table, $colArray, $formats );
+
     $newID = $wpdb->insert_id;
     
     if (($result == 1) && !empty($newID))
@@ -61,7 +61,7 @@ if (!empty($_POST))
         ?>
         <div class="updated settings-error">
             <p>
-                <strong>Member <a href="?page=membership-manager-membership_list&id=<?php echo $newID;?>">'<?php echo $_POST['FirstName'] . " " . $_POST['LastName'];?>'</a> Updated</strong>
+                <strong>Member <a href="?page=membership-manager-member&id=<?php echo $newID;?>">'<?php echo $_POST['FirstName'] . " " . $_POST['LastName'];?>'</a> Updated</strong>
             </p>
         </div>
         <?php
@@ -93,6 +93,9 @@ if ($show_form == true)
           text-align: right;
           margin-right: 10px;
         }
+        form label .req {
+          color: red;
+        }
         form input {
           width: 200px;
         }
@@ -110,7 +113,9 @@ if ($show_form == true)
         }
         button { height:30px;}
     </style>
-    <form method="POST">
+    <div id="errors">
+    <div>
+    <form id="member_form" method="POST">
         <div class="section">
             <?php
             if (!empty($data) && isset($data->ID) && !empty($data->ID))
@@ -215,13 +220,17 @@ if ($show_form == true)
             {
                 foreach($data as $k => $v)
                 {
-                    if ($k == 'ID') continue;
+                    if ($k == 'ID' || empty($v)) continue;
                     ?> 
                     $(<?php echo json_encode("#$k");?>).val(<?php echo json_encode($v);?>);
                     <?php
                 }
             }
             ?>
+
+            $("#member_form").submit(function() {
+                return true;
+            });
         });
     </script>
     <?php

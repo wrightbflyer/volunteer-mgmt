@@ -24,6 +24,7 @@ if(isset($_FILES["file"])) {
 	 	echo "Type: " . $_FILES["file"]["type"] . "<br>";
 	 	echo "Size: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
 	 	echo "Stored in: " . $_FILES["file"]["tmp_name"] . "<br>" ;
+        echo "Processing...";
 
 
 		$file = fopen($_FILES["file"]["tmp_name"], "r") or exit("Unable to open file!");
@@ -32,11 +33,11 @@ if(isset($_FILES["file"])) {
 		while(!feof($file)){
 			$line = fgets($file) ;
 			//echo  $line . "<br>";
+
+			//Split on commas in file.
 			$pieces = explode(",", $line);
 
-			$arrlength=count($pieces);
-
-
+			//Move the pieces into fields
 			$recFirstName = removeQuotes($pieces[0]);
 			$recLastName = removeQuotes($pieces[1]);
 			$recEmail = removeQuotes($pieces[2]);
@@ -52,63 +53,83 @@ if(isset($_FILES["file"])) {
 			$recMemberType = removeQuotes($pieces[12]);
 			$recId = removeQuotes($pieces[13]);
 
+            echo ".";
 
-			echo  "-------------------------------------------<br>";
+			//Write Out the record to the screen.
+			//echo  "-------------------------------------------<br>";
 
-			echo  $recFirstName . "<br>";
-			echo  $recLastName . "<br>";
-			echo  $recEmail . "<br>";
-			echo  $recAddress . "<br>";
-			echo  $recCity . "<br>";
-			echo  $recState . "<br>";
-			echo  $recZip . "<br>";
-			echo  $recCountry . "<br>";
-			echo  $recPhone . "<br>";
-			echo  $recCell . "<br>";
-			echo  $recMemberSince . "<br>";
-			echo  $recRenewalDate . "<br>";
-			echo  $recMemberType . "<br>";
-			echo  $recId . "<br>";
+			//echo  $recFirstName . "<br>";
+			//echo  $recLastName . "<br>";
+			//echo  $recEmail . "<br>";
+			//echo  $recAddress . "<br>";
+			//echo  $recCity . "<br>";
+			//echo  $recState . "<br>";
+			//echo  $recZip . "<br>";
+			//echo  $recCountry . "<br>";
+			//echo  $recPhone . "<br>";
+			//echo  $recCell . "<br>";
+			//echo  $recMemberSince . "<br>";
+			//echo  $recRenewalDate . "<br>";
+			//echo  $recMemberType . "<br>";
+			//echo  $recId . "<br>";
 
+			//If it is the header record skip it.
 			if($recFirstName != "first_name"){
-				$result = $wpdb->replace(
-						self::$member_table
-						,array(
-							'ID' => (isset($recId) && (!empty($recId)))? $recId : 0,
-							'FirstName' => $recFirstName,
-							'LastName' => $recLastName,
-							'MemberType' => $recMemberType,
-							'MemberSince' => self::db_date($recMemberSince),
-							'RenewalDate' => self::db_date($recRenewalDate),
-							'Address' => $recAddress,
-							'City' => $recCity,
-							'State' => $recState,
-							'Zip' => $recZip,
-							'Country' => $recCountry,
-							'HomePhone' => $recPhone,
-							'MobilePhone' => $recCell,
-							'Email' => $recEmail
-						)
-						,array(
-							'%d',
-							'%s',
-							'%s',
-							'%s',
-							'%s',
-							'%s',
-							'%s',
-							'%s',
-							'%s',
-							'%s',
-							'%s',
-							'%s',
-							'%s',
-							'%s'
-						)
-					);
-				}
+
+				//Merge the record into the database based on the record Id.
+                $colArray = array(
+                    'ID' => (isset($recId) && (!empty($recId)))? $recId : 0,
+                    'FirstName' => $recFirstName,
+                    'LastName' => $recLastName,
+                    'MemberType' => $recMemberType,
+                    'Address' => $recAddress,
+                    'City' => $recCity,
+                    'State' => $recState,
+                    'Zip' => $recZip,
+                    'Country' => $recCountry,
+                    'HomePhone' => $recPhone,
+                    'MobilePhone' => $recCell,
+                    'Email' => $recEmail
+                );
+
+                $formats = array('%d','%s','%s',
+                    '%s','%s','%s','%s','%s',
+                    '%s','%s','%s','%s');
+
+                if(!empty($recRenewalDate)) {
+                    array_push($formats,'%s');
+                    $colArray['RenewalDate'] = self::db_date($recRenewalDate); 
+                }
+
+                if(!empty($recMemberSince)) {
+                    array_push($formats,'%s');
+                    $colArray['MemberSince'] = self::db_date($recMemberSince); 
+                }
+
+                $wpdb->replace(self::$member_table,
+                    $colArray, $formats) || die();
+
 			}
+        }
+
+			//Close the File.
 			fclose($file);
+
+			//Now make sure all of the Membership Types are in the Membership Drop Down.
+
+			$result = $wpdb->query('
+				    Insert into wp_wbf_member_type (MemberType)
+					SELECT distinct trim(MemberType) 
+					FROM wp_wbf_members
+					Where MemberType is not null and trim(MemberType) != ""
+					and MemberType not in (
+					Select MemberType
+						 From wp_wbf_member_type
+					);
+			');
+
+            echo "<br><h2>Load Complete</h2>";
+
 		}
 
 	}
