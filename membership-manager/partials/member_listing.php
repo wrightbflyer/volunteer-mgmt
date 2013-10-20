@@ -10,7 +10,7 @@
 </style>
 
 <div id="download">
-	<div class="pull-left">
+	<div style="float:left">
 		<a class="button button-hero" href="javascript:downloadCSV();">Download CSV</a>
 	</div>
 	<div class="metabox-holder postbox-container" style="margin-left:25px;padding-top:0px;">
