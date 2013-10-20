@@ -294,21 +294,21 @@ class WBF_Membership {
     static private function th($label, $sortable) 
     {
         //icon-sort icon-sort-down icon-sort-up
-        $icon = '<i class="icon icon-sort" style="color:#CCC"></i>';
+		$sortClass = 'sortable desc';
+		$label = "<span>$label</span> <span class=\"sorting-indicator\"></span>";
         if (   (isset($_POST['sort']) && ($_POST['sort'] == $sortable))
             || (!isset($_POST['sort']) && ($sortable == 'lastname'))
            )
         {
             $sortable .= " DESC";
-            $icon = '<i class="icon icon-arrow-down"></i>';
+			$sortClass = "sorted desc";
         }
         elseif (isset($_POST['sort']) && ($_POST['sort'] == ($sortable . " DESC")))
         {
-            $icon = '<i class="icon icon-arrow-up"></i>';
+			$sortClass = "sorted asc";
         }
-        //$url = add_query_arg( array( 'sort' => $sortable ) );
-        //return "<th><a href=\"$url\">$label $icon</a></th>";
-		return "<th><a href=\"javascript:setSort('$sortable');\">$label $icon</a></th>";
+		$sortClass = "manage-column column-name $sortClass";
+		return "<th class=\"$sortClass\"><a href=\"javascript:setSort('$sortable');\">$label</a></th>";
     }
 
     static private function text_editor_for($field, $label, $args = null) 

@@ -5,8 +5,6 @@
     }
     tbody td {padding:5px;}
     #download { margin-bottom: 20px; }
-	
-	#filters { float:left; padding:3px; border:1px solid #444; border-radius:4px 4px; }
 </style>
 
 <div id="download">
