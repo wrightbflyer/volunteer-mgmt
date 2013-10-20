@@ -3,10 +3,16 @@ $show_form = true;
 
 if (!empty($_POST))
 {
+	function cleanQuotes($value) {
+		if (empty($value)) {
+			return $value;
+		}
+		return str_replace("\\\"", "\"", $value);
+	}
     $colArray = array(
             'ID' => (isset($_POST['ID']) && (!empty($_POST['ID'])))? $_POST['ID'] : 0,
-            'FirstName' => $_POST['FirstName'],
-            'LastName' => $_POST['LastName'],
+            'FirstName' => cleanQuotes($_POST['FirstName']),
+            'LastName' => cleanQuotes($_POST['LastName']),
             'MemberType' => $_POST['MemberType'],
             'Address' => $_POST['Address'],
             'City' => $_POST['City'],
@@ -49,7 +55,7 @@ if (!empty($_POST))
         ?>
         <div class="updated settings-error">
             <p>
-                <strong>Member <a href="?page=membership-manager-member&id=<?php echo $newID;?>">'<?php echo $_POST['FirstName'] . " " . $_POST['LastName'];?>'</a> Added</strong>
+                <strong>Member <a href="?page=membership-manager-member&id=<?php echo $newID;?>">'<?php echo cleanQuotes($_POST['FirstName']) . " " . cleanQuotes($_POST['LastName']);?>'</a> Added</strong>
             </p>
         </div>
         <?php
@@ -61,7 +67,7 @@ if (!empty($_POST))
         ?>
         <div class="updated settings-error">
             <p>
-                <strong>Member <a href="?page=membership-manager-member&id=<?php echo $newID;?>">'<?php echo $_POST['FirstName'] . " " . $_POST['LastName'];?>'</a> Updated</strong>
+                <strong>Member <a href="?page=membership-manager-member&id=<?php echo $newID;?>">'<?php echo cleanQuotes($_POST['FirstName']) . " " . cleanQuotes($_POST['LastName']);?>'</a> Updated</strong>
             </p>
         </div>
         <?php
