@@ -35,8 +35,20 @@ class WBF_Membership {
     
     static function delimit($accum,$next)
     {
-      return "$accum" . json_encode($next) . ",";
+	  return "$accum" . self::removeCommas(self::removeQuotes($next)) . ",";
     }
+	
+	static function removeCommas($value) {
+		return str_replace(",", "", $value); 
+	}
+	
+	static function removeQuotes($value){
+		if( $value == null){
+			return "";
+		}
+
+		return "\"" . str_replace("\"", "", $value) . "\""; 
+	}
 
     static function downloadcsv()
     {
