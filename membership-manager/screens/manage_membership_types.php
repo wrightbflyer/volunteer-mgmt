@@ -1,4 +1,4 @@
-<h2>Manage Membership Types</h2>
+<h2>Member Types</h2>
 <?php 
 if (!empty($_POST))
 {
