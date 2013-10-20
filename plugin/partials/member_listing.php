@@ -98,20 +98,19 @@
 <script type="text/javascript">
 	jQuery('document').ready(function(){
 		jQuery('#membership_type_filter').change(function(){
+			jQuery('#downloadcsv').val('');
 			jQuery(this).closest('form').submit();
 		});
 	});
 	
 	function setSort(sortField) {
 		jQuery('#sort').val(sortField);
+		jQuery('#downloadcsv').val('');
 		jQuery('#member_list_form').submit();
 	}
 	
 	function downloadCSV() {
 		jQuery('#downloadcsv').val('1');
 		jQuery('#member_list_form').submit();
-		setTimeout(function(){
-			jQuery('#downloadcsv').val('');
-		}, 3000);
 	}
 </script>
