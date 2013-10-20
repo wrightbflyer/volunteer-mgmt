@@ -368,4 +368,10 @@ class WBF_Membership {
     {
         return $db->get_results("select * from " . self::$member_type_table . " order by membertype asc");
     }
+
+    static private function remove_member($db, $memberId)
+    {
+        $db->delete(self::$member_table,
+            array("ID" => $memberId), array('%d'));
+    }
 }

@@ -131,6 +131,9 @@ if ($show_form == true)
         }
         #errors div.error-item {
         }
+        #deleteLink {
+            margin-left: 25px;
+        }
     </style>
     <div id="error-div">
         <ul id="errors">
@@ -139,7 +142,7 @@ if ($show_form == true)
     <form id="member_form" method="POST">
         <div class="section">
             <?php
-            if (!empty($data) && isset($data->ID) && !empty($data->ID))
+            if (!empty($data) && !empty($data->ID))
             {
                 echo '<input type="hidden" name="ID" value="' . $data->ID . '"/>';
             }
@@ -225,7 +228,10 @@ if ($show_form == true)
             <?php echo self::text_editor_for("MobilePhone", "Mobile Phone", array("max" => 32)) ?>
             <?php echo self::text_editor_for("MemberSince", "Member Since") ?>
             <div>
-                <a stype="float:right" href="admin.php?page=membership-manager-membership_list">cancel</a>
+                <a href="admin.php?page=membership-manager-membership_list">cancel</a>
+<?php if (!empty($data) && !empty($data->ID)) { ?>
+                <a id="deleteLink" href="admin.php?page=membership-manager-membership_list&delete&ID=<?php echo $data->ID ?>">delete</a>
+<?php } ?>
                 <button style="float: right" type="submit" id="member_form_submit"></button>
             </div>
         </div>
@@ -248,6 +254,10 @@ if ($show_form == true)
                 }
             }
             ?>
+
+            $("#deleteLink").click(function() {
+               return window.confirm("Do you really want to delete this user?"); 
+            });
             
             var errDiv= $("#error-div");
             var errors = $("#errors");
