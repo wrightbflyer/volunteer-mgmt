@@ -110,5 +110,8 @@
 	function downloadCSV() {
 		jQuery('#downloadcsv').val('1');
 		jQuery('#member_list_form').submit();
+		setTimeout(function(){
+			jQuery('#downloadcsv').val('');
+		}, 3000);
 	}
 </script>
