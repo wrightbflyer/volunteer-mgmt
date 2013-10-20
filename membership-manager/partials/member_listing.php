@@ -20,7 +20,7 @@
 					
 					Showing <?php echo $wpdb->num_rows; ?> results.
 					Filter by Membership Type: <select id="membership_type_filter" name="membership_type_filter">
-						<option value="">- Select -</option>
+						<option value="">- All -</option>
 					<?php 
 					$member_types = self::get_member_types($wpdb);			
 					foreach($member_types as $mt) { ?>
