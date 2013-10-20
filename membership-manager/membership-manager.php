@@ -54,36 +54,29 @@ class WBF_Membership {
     {
         global $wpdb;
         
-		if (!empty($_POST))
-		{
-			$list = "membership_list";
-		}
-		else
-		{
-			$parts = explode('-', $_GET['page']);
-			$list = array_pop($parts);
-		}
+        $parts = explode('-', $_GET['page']);
+        $list = array_pop($parts);
 		$filename = $list . '_' . date("Y-m-d") . ".csv";
         
+        $clause = null;
+        if (!empty($_POST) && !empty($_POST["membership_type_filter"])) {
+            $clause = ' MemberType = "' . $_POST["membership_type_filter"] . '"';
+        }
         switch($list)
         {
             case "renewals":
             {
-                $members = self::get_member_renewal_list($wpdb);
+                $members = self::get_member_renewal_list($wpdb, $clause);
                 break;
             }
             case "snailmail":
             {
-                $members = self::get_member_snailmail_list($wpdb);
+                $members = self::get_member_snailmail_list($wpdb, $clause);
                 break;
             }
             case "membership_list":
             default:
             {
-				$clause = null;
-				if (!empty($_POST) && !empty($_POST["membership_type_filter"])) {
-					$clause = ' MemberType = "' . $_POST["membership_type_filter"] . '"';
-				}
                 $members = self::get_members($wpdb, $clause);
                 break;
             }
@@ -343,24 +336,26 @@ class WBF_Membership {
     static private function get_members($db, $clause = null)
     {
       $orderBy = !empty($_POST["sort"]) ? $_POST["sort"] : "LastName";
-      $where = isset($clause) ? "WHERE $clause" : "";
+      $where = !empty($clause) ? "WHERE $clause" : "";
       $sql = "SELECT * FROM " . self::$member_table . " $where ORDER BY $orderBy";
       return $db->get_results($sql);
     }
     
-    static private function get_member_renewal_list($db)
+    static private function get_member_renewal_list($db, $clause = null)
     {
         // Calculate dates for start and end of this month
         //$startDate = date("Y-m-d H:i:s",mktime(0,0,0,date("m"),1,date("Y")));
         $endDate = date("Y-m-d H:i:s",mktime(0,0,-1,date("m")+1,1,date("Y")));
         
-        $where = "RenewalDate is not null and RenewalDate <= '$endDate'";
+        $where = !empty($clause) ? "$clause AND " : '';
+        $where .= "RenewalDate is not null and RenewalDate <= '$endDate'";
         return self::get_members($db, $where);
     }
     
-    static private function get_member_snailmail_list($db)
+    static private function get_member_snailmail_list($db, $clause = null)
     {
-        $where = "Email IS NULL OR Email <=''";
+        $where = !empty($clause) ? "$clause AND " : '';
+        $where .= "(Email IS NULL OR Email <='')";
         return self::get_members($db, $where);
     }
 

@@ -10,26 +10,29 @@
 </style>
 
 <div id="download">
-	<div style="float:left;">
-		<!--<a class="button" href="<?php echo add_query_arg( array("download"=>"true") ) ?>">Download CSV</a>-->
-		<a class="button" href="javascript:downloadCSV();">Download CSV</a>
+	<div class="pull-left">
+		<a class="button button-hero" href="javascript:downloadCSV();">Download CSV</a>
 	</div>
-	<div id="filters" style="margin-left:50px;">
-		<form method="POST" id="member_list_form">
-			<input type="hidden" name="sort" id="sort" value="<?php if(!empty($_POST) && !empty($_POST["sort"])) { echo $_POST["sort"]; } ?>" />
-			<input type="hidden" name="downloadcsv" id="downloadcsv" />
-			
-			Showing <?php echo $wpdb->num_rows; ?> results.
-			Filter by Membership Type: <select id="membership_type_filter" name="membership_type_filter">
-				<option value="">- Select -</option>
-			<?php 
-			$member_types = self::get_member_types($wpdb);			
-			foreach($member_types as $mt) { ?>
-				<option value="<?php echo $mt->MemberType ?>" <?php if (!empty($_POST) && !empty($_POST["membership_type_filter"]) && $_POST["membership_type_filter"] == $mt->MemberType) { echo "selected=selected"; } ?>><?php echo $mt->MemberType ?></option>
-				<?php
-			} ?>
-		</select>
-		</form>
+	<div class="metabox-holder postbox-container" style="margin-left:25px;padding-top:0px;">
+		<div class="postbox" style="margin-bottom:0px;">
+			<div class="inside">
+				<form method="POST" id="member_list_form">
+					<input type="hidden" name="sort" id="sort" value="<?php if(!empty($_POST) && !empty($_POST["sort"])) { echo $_POST["sort"]; } ?>" />
+					<input type="hidden" name="downloadcsv" id="downloadcsv" />
+					
+					Showing <?php echo $wpdb->num_rows; ?> results.
+					Filter by Membership Type: <select id="membership_type_filter" name="membership_type_filter">
+						<option value="">- Select -</option>
+					<?php 
+					$member_types = self::get_member_types($wpdb);			
+					foreach($member_types as $mt) { ?>
+						<option value="<?php echo $mt->MemberType ?>" <?php if (!empty($_POST) && !empty($_POST["membership_type_filter"]) && $_POST["membership_type_filter"] == $mt->MemberType) { echo "selected=selected"; } ?>><?php echo $mt->MemberType ?></option>
+						<?php
+					} ?>
+				</select>
+				</form>
+			</div>
+		</div>
 	</div>
 	<div style="clear:both;"></div>
 </div>
