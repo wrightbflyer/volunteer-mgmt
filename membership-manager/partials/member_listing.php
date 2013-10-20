@@ -75,7 +75,7 @@
             ?>
             <tr>
                 <td>
-                    <a href="<?php echo add_query_arg( array("id"=>$member->ID), menu_page_url( 'membership-manager-member', false ) ); ?>">
+                    <a href="<?php echo add_query_arg( array("id"=>$member->ID), menu_page_url( 'membership-manager-new_member', false ) ); ?>">
                         <?php echo $member->LastName;?>, <?php echo $member->FirstName;?>
                     </a>
                 </td>

@@ -134,14 +134,6 @@ class WBF_Membership {
         );
         add_submenu_page(
                 'membership-manager',
-                null,
-                null,
-                'manage_options',
-                'membership-manager-member',
-                array(__CLASS__, 'include_admin_file')
-        );
-         add_submenu_page(
-                'membership-manager',
                 "Renewals",
                 "Renewals",
                 'MM-WBF: Manage Membership Database',
@@ -328,15 +320,24 @@ class WBF_Membership {
 
     static private function text_editor_for($field, $label, $args = null) 
     {
-      $req = "";
+        $req = "";
 
-      if( isset($args) && isset($args["required"]) && $args["required"] == true ) {
-        $req = "<span class=\"req\">*</span>";
-      }
-      return "<div>
-                <label for=\"$field\">$label $req</label>
-                <input type=\"text\" name=\"$field\" id=\"$field\"/>
-              </div>";
+        if( isset($args) ) {
+            if(isset($args["required"]) && $args["required"] == true ) {
+                $req = "<span class=\"req\">*</span>";
+            }
+            if(!empty($args["max"])) {
+                $len = $args["max"];
+            }
+        }
+
+        $html = "<div>
+            <label for=\"$field\">$label $req</label>
+            <input type=\"text\" name=\"$field\" id=\"$field\"";
+
+            if(isset($len)) $html = $html . " maxlength=\"$len\" ";
+
+        return $html .  "/> </div>";
     }
 
     static private function get_members($db, $clause = null)
@@ -366,5 +367,11 @@ class WBF_Membership {
     static private function get_member_types($db)
     {
         return $db->get_results("select * from " . self::$member_type_table . " order by membertype asc");
+    }
+
+    static private function remove_member($db, $memberId)
+    {
+        $db->delete(self::$member_table,
+            array("ID" => $memberId), array('%d'));
     }
 }
