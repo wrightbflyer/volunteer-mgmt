@@ -5,10 +5,31 @@
     }
     tbody td {padding:5px;}
     #download { margin-bottom: 20px; }
+	
+	#filters { float:left; padding:3px; border:1px solid #444; border-radius:4px 4px; }
 </style>
 
 <div id="download">
-    <a class="button" href="<?php echo add_query_arg( array("download"=>"true") ) ?>">Download CSV</a>
+	<div style="float:left;">
+		<a class="button" href="<?php echo add_query_arg( array("download"=>"true") ) ?>">Download CSV</a>
+	</div>
+	<div id="filters" style="margin-left:50px;">
+		<form method="POST">
+			<input type="hidden" name="sort" id="sort" value="<?php if(!empty($_POST) && !empty($_POST["sort"])) { echo $_POST["sort"]; } ?>" />
+			
+			Showing <?php echo $wpdb->num_rows; ?> results.
+			Filter by Membership Type: <select id="membership_type_filter" name="membership_type_filter">
+				<option value="">- Select -</option>
+			<?php 
+			$member_types = self::get_member_types($wpdb);			
+			foreach($member_types as $mt) { ?>
+				<option value="<?php echo $mt->MemberType ?>" <?php if (!empty($_POST) && !empty($_POST["membership_type_filter"]) && $_POST["membership_type_filter"] == $mt->MemberType) { echo "selected=selected"; } ?>><?php echo $mt->MemberType ?></option>
+				<?php
+			} ?>
+		</select>
+		</form>
+	</div>
+	<div style="clear:both;"></div>
 </div>
 
 <table class="wp-list-table widefat">
@@ -70,3 +91,16 @@
         ?>
     </tbody>
 </table>
+
+<script type="text/javascript">
+	jQuery('document').ready(function(){
+		jQuery('#membership_type_filter').change(function(){
+			jQuery(this).closest('form').submit();
+		});
+	});
+	
+	function setSort(sortField) {
+		jQuery('#sort').val(sortField);
+		document.forms[0].submit();
+	}
+</script>

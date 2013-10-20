@@ -283,19 +283,20 @@ class WBF_Membership {
     {
         //icon-sort icon-sort-down icon-sort-up
         $icon = '<i class="icon icon-sort" style="color:#CCC"></i>';
-        if (   (isset($_GET['sort']) && ($_GET['sort'] == $sortable))
-            || (!isset($_GET['sort']) && ($sortable == 'lastname'))
+        if (   (isset($_POST['sort']) && ($_POST['sort'] == $sortable))
+            || (!isset($_POST['sort']) && ($sortable == 'lastname'))
            )
         {
-            $sortable .= "+DESC";
+            $sortable .= " DESC";
             $icon = '<i class="icon icon-arrow-down"></i>';
         }
-        elseif (isset($_GET['sort']) && ($_GET['sort'] == ($sortable . " DESC")))
+        elseif (isset($_POST['sort']) && ($_POST['sort'] == ($sortable . " DESC")))
         {
             $icon = '<i class="icon icon-arrow-up"></i>';
         }
-        $url = add_query_arg( array( 'sort' => $sortable ) );
-        return "<th><a href=\"$url\">$label $icon</a></th>";
+        //$url = add_query_arg( array( 'sort' => $sortable ) );
+        //return "<th><a href=\"$url\">$label $icon</a></th>";
+		return "<th><a href=\"javascript:setSort('$sortable');\">$label $icon</a></th>";
     }
 
     static private function text_editor_for($field, $label, $args = null) 
@@ -313,7 +314,7 @@ class WBF_Membership {
 
     static private function get_members($db, $clause = null)
     {
-      $orderBy = isset($_GET["sort"]) ? $_GET["sort"] : "LastName";
+      $orderBy = isset($_POST["sort"]) ? $_POST["sort"] : "LastName";
       $where = isset($clause) ? "WHERE $clause" : "";
       $sql = "SELECT * FROM " . self::$member_table . " $where ORDER BY $orderBy";
       return $db->get_results($sql);
