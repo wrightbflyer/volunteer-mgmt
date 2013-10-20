@@ -11,11 +11,13 @@
 
 <div id="download">
 	<div style="float:left;">
-		<a class="button" href="<?php echo add_query_arg( array("download"=>"true") ) ?>">Download CSV</a>
+		<!--<a class="button" href="<?php echo add_query_arg( array("download"=>"true") ) ?>">Download CSV</a>-->
+		<a class="button" href="javascript:downloadCSV();">Download CSV</a>
 	</div>
 	<div id="filters" style="margin-left:50px;">
-		<form method="POST">
+		<form method="POST" id="member_list_form">
 			<input type="hidden" name="sort" id="sort" value="<?php if(!empty($_POST) && !empty($_POST["sort"])) { echo $_POST["sort"]; } ?>" />
+			<input type="hidden" name="downloadcsv" id="downloadcsv" />
 			
 			Showing <?php echo $wpdb->num_rows; ?> results.
 			Filter by Membership Type: <select id="membership_type_filter" name="membership_type_filter">
@@ -102,6 +104,11 @@
 	
 	function setSort(sortField) {
 		jQuery('#sort').val(sortField);
-		document.forms[0].submit();
+		jQuery('#member_list_form').submit();
+	}
+	
+	function downloadCSV() {
+		jQuery('#downloadcsv').val('1');
+		jQuery('#member_list_form').submit();
 	}
 </script>

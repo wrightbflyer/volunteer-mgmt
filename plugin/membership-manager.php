@@ -27,9 +27,9 @@ class WBF_Membership {
     
     static public function init()
     {
-      if ( isset($_GET["download"]) )
+      if ( !empty($_POST["downloadcsv"]) )
       {
-        self::downloadcsv($_GET["page"]);
+        self::downloadcsv();
       }
     }
     
@@ -38,13 +38,20 @@ class WBF_Membership {
       return "$accum" . json_encode($next) . ",";
     }
 
-    static function downloadcsv($p)
+    static function downloadcsv()
     {
         global $wpdb;
         
-        $parts = explode('-', $_GET['page']);
-        $list = array_pop($parts);
-        $filename = $list . '_' . date("Y-m-d") . ".csv";
+		if (!empty($_POST))
+		{
+			$list = "membership_list";
+		}
+		else
+		{
+			$parts = explode('-', $_GET['page']);
+			$list = array_pop($parts);
+		}
+		$filename = $list . '_' . date("Y-m-d") . ".csv";
         
         switch($list)
         {
@@ -61,7 +68,11 @@ class WBF_Membership {
             case "membership_list":
             default:
             {
-                $members = self::get_members($wpdb);
+				$clause = null;
+				if (!empty($_POST) && !empty($_POST["membership_type_filter"])) {
+					$clause = ' MemberType = "' . $_POST["membership_type_filter"] . '"';
+				}
+                $members = self::get_members($wpdb, $clause);
                 break;
             }
         }
@@ -318,7 +329,7 @@ class WBF_Membership {
 
     static private function get_members($db, $clause = null)
     {
-      $orderBy = isset($_POST["sort"]) ? $_POST["sort"] : "LastName";
+      $orderBy = !empty($_POST["sort"]) ? $_POST["sort"] : "LastName";
       $where = isset($clause) ? "WHERE $clause" : "";
       $sql = "SELECT * FROM " . self::$member_table . " $where ORDER BY $orderBy";
       return $db->get_results($sql);
