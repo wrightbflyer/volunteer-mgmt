@@ -48,7 +48,7 @@ class WBF_Membership {
         
         switch($list)
         {
-            case "renewal":
+            case "renewals":
             {
                 $members = self::get_member_renewal_list($wpdb);
                 break;
@@ -89,7 +89,9 @@ class WBF_Membership {
             "Membership Manager", 
             '', 
             "membership-manager",
-            array(__CLASS__, 'include_admin_file')
+            array(__CLASS__, 'include_admin_file'),
+            null,
+            58
         );
         add_submenu_page(
                 'membership-manager',
@@ -141,8 +143,8 @@ class WBF_Membership {
         );
         add_submenu_page(
                 'membership-manager',
-                "Manage Member Types",
-                "Manage Member Types",
+                "Member Types",
+                "Member Types",
                 'MM-WBF: Manage Membership Database',
                 'membership-manager-manage_membership_types',
                 array(__CLASS__, 'include_admin_file')
@@ -166,6 +168,10 @@ class WBF_Membership {
         global $wpdb;
         $parts = explode('-', $_GET['page']);
         $file = array_pop($parts);
+        ?>
+        <div id="icon-generic" class="icon32"><br></div>
+        <div class="wrap"><h2>Membership Manager</h2></div>
+        <?php
         include 'screens/' . $file . '.php';
     }
     
@@ -335,6 +341,6 @@ class WBF_Membership {
 
     static private function get_member_types($db)
     {
-        return $db->get_results("select * from " . self::$member_type_table . " order by idx asc");
+        return $db->get_results("select * from " . self::$member_type_table . " order by membertype asc");
     }
 }
