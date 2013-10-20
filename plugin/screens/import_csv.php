@@ -137,10 +137,41 @@ if(isset($_FILES["file"])) {
  ?>
 
 
-
+<h2>Import CSV</h2>
 
 <form enctype="multipart/form-data"  method="POST">
 	<input type="hidden" name="csv_file_upload" id="file_upload" value="true" />
-	Choose .csv file to import: <input name="file" type="file" /><br />
+
+  <label for="file">Choose .csv file to import:</label>
+  <input name="file" type="file" /><br />
 	<input type="submit" class="button-primary" value="Upload File" />
 </form>
+
+<br/>
+
+<p>Importing data is not for the faint of heart.  Import was only built only for an initial import, but it <em>might</em> work for bulk updates.  Please read the notes below to understand how this works.</p>
+
+<h4>Column headers required</h4>
+<p>The first row of yoru import should include the column headers as follows:</p>
+<pre>
+"first_name","last_name","email","address","city","state","zip","country","phone","cell","member_since","renewal_date","member_type","id"
+</pre>
+
+<h4>Updating or Overwritting data</h4> 
+<p>You'll notice that the last column header is "id".  If this column is not populated, all data will be appended.  That means if you already have 10 members named Joe Smith and import 10 more named Joe Smith, you'll have 20 members named Joe Smith.</p>
+
+<p>If you would like to try bulk updating, you can populate this last column.  Since we also have the ability to download lists, you can attempt to download that data and reimport.  <em>This use case is not well tested and should be considered risky</em>
+</p>
+
+
+<h4>Sample Data</h4>
+<p>Since we've not had a lot of scenarios to validate the import, below is an example import that we know works well.  If you have data that fails to import, you might compare to find what causes the problems.</p>
+
+<pre>
+first_name","last_name","email","address","city","state","zip","country","phone","cell","member_since","renewal_date","member_type","id"
+"STEVE  ","FAST",,"2253 S WOOLER RD","NEW CARLISLE","OH",45344,,"932-128-2320",,"12/1/2012",,"Volunteer",
+"Jimmy ""Jim""","Jones","jimmy@emailr.com","7255 S PALMER RD","NEW CARLISLE","OH",45344,,"937-845-3320","937-543-6555","2/1/2012",,"Trustee",
+"Rick","Rolled","rickrolled@emailr.com","1969 MUSTANG DR","ONTARIO","CA",91761,,"951-442-2122",,"9/10/2011","9/10/2013","Volunteer",
+</pre>
+
+
