@@ -28,6 +28,9 @@
 						<?php
 					} ?>
 				</select>
+				<?php if (!empty($_POST["membership_type_filter"])) { ?>
+				<a href="javascript:clearFilter();" style="margin-left:10px;">Clear Filter</a>
+				<?php } ?>
 				</form>
 			</div>
 		</div>
@@ -113,5 +116,9 @@
 	function downloadCSV() {
 		jQuery('#downloadcsv').val('1');
 		jQuery('#member_list_form').submit();
+	}
+	
+	function clearFilter() {
+		jQuery('#membership_type_filter').val('').trigger('change');
 	}
 </script>
