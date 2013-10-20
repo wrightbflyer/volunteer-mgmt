@@ -135,18 +135,18 @@ class WBF_Membership {
         );
         add_submenu_page(
                 'membership-manager',
-                "Import CSV",
-                "Import CSV",
-                'MM-WBF: Manage Membership Database',
-                'membership-manager-import_csv',
-                array(__CLASS__, 'include_admin_file')
-        );
-        add_submenu_page(
-                'membership-manager',
                 "Member Types",
                 "Member Types",
                 'MM-WBF: Manage Membership Database',
                 'membership-manager-manage_membership_types',
+                array(__CLASS__, 'include_admin_file')
+        );
+        add_submenu_page(
+                'membership-manager',
+                "Import CSV",
+                "Import CSV",
+                'MM-WBF: Manage Membership Database',
+                'membership-manager-import_csv',
                 array(__CLASS__, 'include_admin_file')
         );
         /*add_submenu_page(
@@ -199,7 +199,7 @@ class WBF_Membership {
      */
     static public function on_deactivate()
     {
-        self::dropSql();
+        //self::dropSql();
     }
 
     /**
@@ -207,7 +207,7 @@ class WBF_Membership {
      */
     static public function on_uninstall()
     {
-        self::dropSql();
+        //self::dropSql();
     }
     
     static private function db_string($input)

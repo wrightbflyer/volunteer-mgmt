@@ -229,6 +229,7 @@ if ($show_form == true)
             ?>
 
             $("#member_form").submit(function() {
+                // Add form validation here.
                 return true;
             });
         });
