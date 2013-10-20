@@ -95,7 +95,6 @@ if ($show_form == true)
         }
         div.section
         {
-            width:30%;
             margin-left:50px;
             margin-top:20px;
             padding:7px 15px 7px 15px;
