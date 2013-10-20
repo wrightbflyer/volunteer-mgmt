@@ -229,7 +229,6 @@ if ($show_form == true)
             $( "#MemberSince" ).datepicker();
             $( "#RenewalDate" ).datepicker();
             $( "#FlightDate" ).datepicker();
-            $( "#MemberSince" ).val(<?php echo json_encode(date("m/d/Y"));?>);
             <?php
             if (!empty($data))
             {
