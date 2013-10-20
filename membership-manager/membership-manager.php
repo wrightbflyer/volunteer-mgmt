@@ -17,6 +17,18 @@ class WBF_Membership {
     
     public static $member_table = 'wp_wbf_members';
     public static $member_type_table = 'wp_wbf_member_type';
+
+    public static $sorts = array(
+          'lastname',
+          'membertype',
+          'homephone',
+          'mobilephone',
+          'city',
+          'state',
+          'zip',
+          'email',
+          'renewaldate'
+    );
     
     static public function initialize()
     {
@@ -333,9 +345,32 @@ class WBF_Membership {
         return $html .  "/> </div>";
     }
 
+    static private function generateMemberTypeClause() {
+        global $wpdb;
+        $clause = null;
+        if (!empty($_POST) && 
+            !empty($_POST["membership_type_filter"]) &&
+            self::check_member_type($wpdb, $_POST["membership_type_filter"])) {
+            $clause = ' MemberType = "' . $_POST["membership_type_filter"] . '"';
+        }
+
+        return $clause;
+    }
+
+    static private function getSortValue() {
+        if(!empty($_POST["sort"])) {
+            $sortArray = split(" ", $_POST["sort"]);
+            if(in_array($sortArray[0], self::$sorts)) {
+                return $_POST["sort"];
+            }
+        }
+
+        return "LastName";
+    }
+
     static private function get_members($db, $clause = null)
     {
-      $orderBy = !empty($_POST["sort"]) ? $_POST["sort"] : "LastName";
+      $orderBy = self::getSortValue();
       $where = !empty($clause) ? "WHERE $clause" : "";
       $sql = "SELECT * FROM " . self::$member_table . " $where ORDER BY $orderBy";
       return $db->get_results($sql);
@@ -362,6 +397,14 @@ class WBF_Membership {
     static private function get_member_types($db)
     {
         return $db->get_results("select * from " . self::$member_type_table . " order by membertype asc");
+    }
+
+    static private function check_member_type($db, $memberType)
+    {
+        return $db->get_var(
+            $db->prepare("select count(*) from "
+            . self::$member_type_table .
+            " where MemberType = %s", $memberType)) == 1;
     }
 
     static private function remove_member($db, $memberId)
