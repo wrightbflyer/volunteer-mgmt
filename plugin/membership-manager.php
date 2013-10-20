@@ -199,7 +199,7 @@ class WBF_Membership {
      */
     static public function on_deactivate()
     {
-        // self::dropSql();
+        self::dropSql();
     }
 
     /**
@@ -207,7 +207,7 @@ class WBF_Membership {
      */
     static public function on_uninstall()
     {
-        // self::dropSql();
+        self::dropSql();
     }
     
     static private function db_string($input)
@@ -218,7 +218,11 @@ class WBF_Membership {
     
     static private function db_date($input)
     {
-        return mysql_real_escape_string(date("Y-m-d H:i:s",strtotime($input)));
+        if(!empty($input)) {
+            return mysql_real_escape_string(date("Y-m-d H:i:s",strtotime($input)));
+        }
+
+        return null;
     }
     
     static private function db_number($input)
@@ -323,16 +327,16 @@ class WBF_Membership {
     static private function get_member_renewal_list($db)
     {
         // Calculate dates for start and end of this month
-        $startDate = date("Y-m-d H:i:s",mktime(0,0,0,date("m"),1,date("Y")));
+        //$startDate = date("Y-m-d H:i:s",mktime(0,0,0,date("m"),1,date("Y")));
         $endDate = date("Y-m-d H:i:s",mktime(0,0,-1,date("m")+1,1,date("Y")));
         
-        $where = "RenewalDate < '$endDate'";
+        $where = "RenewalDate is not null and RenewalDate <= '$endDate'";
         return self::get_members($db, $where);
     }
     
     static private function get_member_snailmail_list($db)
     {
-        $where = "(Email IS NULL) OR (Email <='')";
+        $where = "Email IS NULL OR Email <=''";
         return self::get_members($db, $where);
     }
 

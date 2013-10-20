@@ -84,7 +84,8 @@
                 <td><?php echo $member->State;?></td>
                 <td><?php echo $member->Zip;?></td>
                 <td><?php echo $member->Email;?></td>
-                <td><?php echo date("F jS, Y",strtotime($member->RenewalDate));?></td>
+                <td><?php if(!empty($member->RenewalDate)) { 
+                    echo date("F jS, Y",strtotime($member->RenewalDate));} ?></td>
             </tr>
             <?php
         }
