@@ -48,26 +48,14 @@ if (!empty($_POST))
 
     $newID = $wpdb->insert_id;
     
-    if (($result == 1) && !empty($newID))
-    {
-        // Record added successfully
-        $show_form = false;
-        ?>
-        <div class="updated settings-error">
-            <p>
-                <strong>Member <a href="?page=membership-manager-member&id=<?php echo $newID;?>">'<?php echo cleanQuotes($_POST['FirstName']) . " " . cleanQuotes($_POST['LastName']);?>'</a> Added</strong>
-            </p>
-        </div>
-        <?php
-    }
-    elseif ($result > 1)
+    if ($result !== false)
     {
         // Record updated successfully
         $show_form = false;
         ?>
         <div class="updated settings-error">
             <p>
-                <strong>Member <a href="?page=membership-manager-member&id=<?php echo $newID;?>">'<?php echo cleanQuotes($_POST['FirstName']) . " " . cleanQuotes($_POST['LastName']);?>'</a> Updated</strong>
+                <strong>Member <a href="?page=membership-manager-new_member&id=<?php echo $newID;?>">'<?php echo cleanQuotes($_POST['FirstName']) . " " . cleanQuotes($_POST['LastName']);?>'</a> Saved</strong>
             </p>
         </div>
         <?php
